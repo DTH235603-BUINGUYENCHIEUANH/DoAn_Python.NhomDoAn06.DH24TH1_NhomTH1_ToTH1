@@ -3,7 +3,6 @@
 -- ==============================================
 CREATE DATABASE IF NOT EXISTS QLKS;
 USE QLKS;
-DROP DATABASE QLKS;
 
 -- ==============================================
 -- BẢNG NHÂN VIÊN
@@ -35,7 +34,7 @@ CREATE TABLE PHONG (
     MaPhong CHAR(10) PRIMARY KEY,
     TenPhong VARCHAR(30),
     LoaiPhong VARCHAR(20),
-    Gia DECIMAL(12,0),
+    Gia DECIMAL(18,2),
     TrangThai VARCHAR(20)
 );
 
@@ -51,18 +50,35 @@ CREATE TABLE DICHVU (
 -- ==============================================
 -- BẢNG ĐẶT PHÒNG
 -- ==============================================
+DROP TABLE DATPHONG;
 CREATE TABLE DATPHONG (
     MaDatPhong CHAR(10) PRIMARY KEY,
     MaKHDatPhong CHAR(10),
     MaPhong CHAR(10),
     NgayDat DATE,
     NgayTra DATE,
+    SoNgayO INT,
     SoLuongKhach INT,
     MaKHKhac VARCHAR(50),
+    ThanhTien DECIMAL(18,2),
     GhiChu VARCHAR(200),
     FOREIGN KEY (MaKHDatPhong) REFERENCES KHACHHANG(MaKH),
     FOREIGN KEY (MaPhong) REFERENCES PHONG(MaPhong)
 );
+
+-- ==============================================
+-- BẢNG ĐẶT DỊCH VỤ
+-- ==============================================
+CREATE TABLE DATDICHVU (
+    MaDatDV CHAR(10) PRIMARY KEY,
+    MaKHDatDV CHAR(10),
+    MaDV CHAR(10),
+    SoLuongDV INT,
+    ThanhTien DECIMAL(18,2),
+    FOREIGN KEY (MaKHDatDV) REFERENCES KHACHHANG(MaKH),
+    FOREIGN KEY (MaDV) REFERENCES DICHVU(MaDV)
+);
+
 
 -- ==============================================
 -- BẢNG HOÁ ĐƠN
@@ -71,28 +87,22 @@ CREATE TABLE HOADON (
     MaHoaDon CHAR(10) PRIMARY KEY,
     MaNVThanhToan CHAR(10),
     MaKH CHAR(10),
-    MaPhong CHAR(10),
-    MaDVDaDat VARCHAR(100),
-    TienPhong DECIMAL(18,2),
-    TienDV DECIMAL(18,2),
-    TongTien DECIMAL(18,0),
+    PhuongThucTT VARCHAR(50) CHECK (PhuongThucTT IN ('Chuyen khoan','Tien mat')),
+    TongTien DECIMAL(18,2),
     FOREIGN KEY (MaNVThanhToan) REFERENCES NHANVIEN(MaNV),
-    FOREIGN KEY (MaKH) REFERENCES KHACHHANG(MaKH),
-    FOREIGN KEY (MaPhong) REFERENCES PHONG(MaPhong)
+    FOREIGN KEY (MaKH) REFERENCES KHACHHANG(MaKH)
 );
 
 -- ==============================================
 -- BẢNG NGƯỜI DÙNG
 -- ==============================================
+DROP TABLE NGUOIDUNG;
 CREATE TABLE NGUOIDUNG (
 	ID INT AUTO_INCREMENT PRIMARY KEY,
     TenNguoiDung VARCHAR(30),
     MatKhau VARCHAR(30),
-    VaiTro VARCHAR(20),
     MaNV CHAR(10),
-    MaKH CHAR(10),
-    FOREIGN KEY (MaNV) REFERENCES NHANVIEN(MaNV),
-    FOREIGN KEY (MaKH) REFERENCES KHACHHANG(MaKH)
+    FOREIGN KEY (MaNV) REFERENCES NHANVIEN(MaNV)
 );
 
 -- ==============================================
@@ -147,33 +157,63 @@ INSERT INTO DICHVU (MaDV, TenDV, GiaDV) VALUES
 
 -- ĐẶT PHÒNG
 INSERT INTO DATPHONG 
-(MaDatPhong, MaKHDatPhong, MaPhong, NgayDat, NgayTra, SoLuongKhach, MaKHKhac, GhiChu) 
+(MaDatPhong, MaKHDatPhong, MaPhong, NgayDat, NgayTra, SoNgayO, SoLuongKhach, MaKHKhac, ThanhTien, GhiChu) 
 VALUES
-('DP001', 'KH001', 'P201', '2025-10-25', '2025-10-27', 2, 'KH002', 'Khách yêu cầu phòng gần thang máy' ),
-('DP002', 'KH004', 'P101', '2025-10-26', '2025-10-30', 1, NULL, NULL ),
-('DP003', 'KH003', 'P102', '2025-10-28', '2025-10-30', 1, NULL, 'Khách nước ngoài' ),
-('DP004', 'KH005', 'P103', '2025-10-29', '2025-10-31', 1, NULL, 'Khách yêu cầu phòng view biển' ),
-('DP005', 'KH006', 'P202', '2025-10-29', '2025-10-31', 2, 'KH007', 'Khách tổ chức sinh nhật' ),
-('DP006', 'KH008', 'P203', '2025-10-29', '2025-10-31', 2, 'KH009', 'Khách muốn checkin sớm'),
-('DP007', 'KH010', 'P301', '2025-10-29', '2025-10-31', 3, 'KH011, KH012', 'Nhóm 3 người');
+-- DP001: KH001 đặt phòng đôi P201 (1.500.000/đêm) ở 2 đêm → 3.000.000
+('DP001', 'KH001', 'P201', '2025-10-25', '2025-10-27', 2, 2, 'KH002', 3000000, 'Khách yêu cầu phòng gần thang máy'),
+-- DP002: KH004 đặt phòng đơn P101 (500.000/đêm) ở 4 đêm → 2.000.000
+('DP002', 'KH004', 'P101', '2025-10-26', '2025-10-30', 4, 1, NULL, 2000000, NULL),
+-- DP003: KH003 đặt phòng đơn P102 (800.000/đêm) ở 2 đêm → 1.600.000
+('DP003', 'KH003', 'P102', '2025-10-28', '2025-10-30', 2, 1, NULL, 1600000, 'Khách nước ngoài'),
+-- DP004: KH005 đặt phòng đơn P103 (1.500.000/đêm) ở 2 đêm → 3.000.000
+('DP004', 'KH005', 'P103', '2025-10-29', '2025-10-31', 2, 1, NULL, 3000000, 'Khách yêu cầu phòng view biển'),
+-- DP005: KH006 đặt phòng đôi P202 (900.000/đêm) ở 6 đêm → 5.400.000
+('DP005', 'KH006', 'P202', '2025-10-25', '2025-10-31', 6, 2, 'KH007', 5400000, 'Khách tổ chức sinh nhật'),
+-- DP006: KH008 đặt phòng đôi P203 (500.000/đêm) ở 5 đêm → 2.500.000
+('DP006', 'KH008', 'P203', '2025-10-25', '2025-10-30', 5, 2, 'KH009', 2500000, 'Khách muốn checkin sớm'),
+-- DP007: KH010 đặt phòng VIP P301 (1.500.000/đêm) ở 2 đêm → 3.000.000
+('DP007', 'KH010', 'P301', '2025-10-29', '2025-10-31', 2, 3, 'KH011, KH012', 3000000, 'Nhóm 3 người');
 
+-- ĐẶT DỊCH VỤ 
+INSERT INTO DATDICHVU (MaDatDV, MaKHDatDV, MaDV, SoLuongDV, ThanhTien) VALUES
+-- KH001: sử dụng Bữa sáng (DV003) cho 2 người × 2 ngày = 4 phần
+('DVU001', 'KH001', 'DV003', 4, 400000),
+-- KH003: chỉ dùng Bữa sáng 2 phần
+('DVU002', 'KH003', 'DV003', 2, 200000),
+-- KH004: sử dụng Spa & Massage 1 lần
+('DVU003', 'KH004', 'DV004', 1, 500000),
+-- KH004: sử dụng Đưa đón sân bay 1 lần
+('DVU004', 'KH004', 'DV002', 1, 300000),
+-- KH005: sử dụng Giặt ủi 3 lần
+('DVU005', 'KH005', 'DV001', 3, 150000),
+-- KH006: đặt Trang trí theo yêu cầu (sinh nhật) 1 lần
+('DVU006', 'KH006', 'DV005', 1, 1000000),
+-- KH006: thêm Bữa sáng cho 2 người × 2 ngày = 4 phần
+('DVU007', 'KH006', 'DV003', 4, 400000),
+-- KH008: chỉ sử dụng Giặt ủi 2 lần
+('DVU008', 'KH008', 'DV001', 2, 100000),
+-- KH010: dùng Spa & Massage 2 lần (VIP khách)
+('DVU009', 'KH010', 'DV004', 2, 1000000),
+-- KH010: dùng Giặt ủi 3 lần (VIP khách)
+('DVU010', 'KH010', 'DV001', 3, 150000),
+-- KH010: thêm Trang trí theo yêu cầu (phòng VIP)
+('DVU011', 'KH010', 'DV005', 1, 1000000);
 
 -- HOÁ ĐƠN
-INSERT INTO HOADON (MaHoaDon, MaNVThanhToan, MaKH, MaPhong, MaDVDaDat, TienPhong, TienDV, TongTien) VALUES
-('HD001', 'NV004', 'KH001', 'P201', 'DV003', 3000000, 100000, 3100000),
-('HD002', 'NV005', 'KH004', 'P101', 'DV004', 2000000, 500000, 2500000),
-('HD003', 'NV005', 'KH003', 'P102', 'DV003', 1600000, 100000, 1700000),
-('HD004', 'NV004', 'KH005', 'P103', 'DV001', 3000000, 50000, 3050000),
-('HD005', 'NV004', 'KH006', 'P202', 'DV001', 1800000, 50000, 1850000),
-('HD006', 'NV005', 'KH008', 'P203', 'DV001', 1000000, 50000, 1050000),
-('HD007', 'NV004', 'KH010', 'P301', 'DV001', 3000000, 50000, 3050000);
+INSERT INTO HOADON (MaHoaDon, MaNVThanhToan, MaKH, PhuongThucTT, TongTien) VALUES
+('HD001', 'NV004', 'KH001', 'Chuyen khoan', 3400000),                 
+('HD002', 'NV005', 'KH004', 'Chuyen khoan', 2800000),
+('HD003', 'NV005', 'KH003', 'Tien mat', 1800000),
+('HD004', 'NV004', 'KH005', 'Chuyen khoan', 3150000),
+('HD005', 'NV004', 'KH006', 'Tien mat', 6800000),
+('HD006', 'NV005', 'KH008', 'Tien mat', 2600000),
+('HD007', 'NV004', 'KH010', 'Chuyen khoan', 5150000);
 
 -- NGƯỜI DÙNG
-INSERT INTO NGUOIDUNG (TenNguoiDung, MatKhau, VaiTro, MaNV, MaKH) VALUES
-('ND01', '1111', 'Admin', NULL, NULL),
-('ND02', '2222', 'NhanVien', 'NV001', NULL),
-('ND03', '3333', 'NhanVien', 'NV002', NULL),
-('ND04', '4444', 'Customer', NULL, 'KH001');
+INSERT INTO NGUOIDUNG (TenNguoiDung, MatKhau, MaNV) VALUES
+('ND01', '1111', 'NV004'),
+('ND02', '2222', 'NV001'),
+('ND03', '3333', 'NV002');
 
 SELECT * FROM NHANVIEN;
 SELECT * FROM KHACHHANG;

@@ -4,6 +4,14 @@ from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import connect_db
 
+# ====== Hàm canh giữa cửa sổ ======
+def center_window(win, w=700, h=500):
+    ws = win.winfo_screenwidth()
+    hs = win.winfo_screenheight()
+    x = (ws // 2) - (w // 2)
+    y = (hs // 2) - (h // 2)
+    win.geometry(f'{w}x{h}+{x}+{y}')
+    
 # ===== Cửa sổ chính =====
 dichvu = Tk()
 dichvu.title("Dịch vụ - Quản lý khách sạn")
@@ -19,13 +27,16 @@ frame_Title.configure(bg="#E6F2FA")
 # ==== Frame nhập thông tin ==== 
 frame_Info = Frame(dichvu)
 Label(frame_Info, text="Mã dịch vụ: ", font=("Time news roman",14,"bold"), foreground="#2F4156", background="#E6F2FA").grid(row=0, column=0)
-Entry(frame_Info, width=10).grid(row=0, column=1)
+entry_Madv = Entry(frame_Info, width=10)
+entry_Madv .grid(row=0, column=1)
 
 Label(frame_Info, text="Tên dịch vụ: ", font=("Time news roman",14,"bold"), foreground="#2F4156", background="#E6F2FA").grid(row=0, column=2)
-Entry(frame_Info, width=20).grid(row=0, column=3)
+entry_Tendv = Entry(frame_Info, width=20)
+entry_Tendv.grid(row=0, column=3)
 
 Label(frame_Info, text="Giá dịch vụ: ", font=("Time news roman",14,"bold"), foreground="#2F4156", background="#E6F2FA").grid(row=0, column=4)
-Entry(frame_Info, width=10).grid(row=0, column=5)
+entry_GiaDV = Entry(frame_Info, width=10)
+entry_GiaDV.grid(row=0, column=5)
 frame_Info.pack(pady=5, padx=10, fill="x")
 frame_Info.configure(bg="#E6F2FA")
 
