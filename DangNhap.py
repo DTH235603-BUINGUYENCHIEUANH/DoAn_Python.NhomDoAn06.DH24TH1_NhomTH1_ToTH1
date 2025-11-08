@@ -1,6 +1,9 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import messagebox
+from QLKS import conn, cur, connect_db
+from TrangChu import open_trang_chu
+import mysql.connector
 
 
 def DangNhap():  # xử lý btn Đăng Nhập
@@ -12,10 +15,33 @@ def DangNhap():  # xử lý btn Đăng Nhập
         messagebox.showwarning("Vui lòng điền đầy đủ thông tin.", "Thông báo")
     elif matkhau != xacnhan:
         messagebox.showerror("Lỗi", "Mật khẩu xác nhận không khớp.")
+        confirm_entry.focus_set()   
+        cur.close()
     else:
-        messagebox.showinfo(
-            "Thành công", 
-            f"Đăng nhập thành công với tài khoản: {ten}")
+        # ====== Kết nối MySQL ======
+        try:
+            conn = connect_db()
+            cur = conn.cursor()
+
+            # Kiểm tra người dùng tồn tại không
+            query = "SELECT * FROM nguoidung WHERE TenNguoiDung = %s AND MatKhau = %s"
+            cur.execute(query, (ten, matkhau))
+            user = cur.fetchone()
+
+            if user:
+                messagebox.showinfo("Thành công", f"Đăng nhập thành công với tài khoản: {ten}")
+                frmDangNhap.destroy()      # Đóng cửa sổ đăng nhập
+                open_trang_chu()           # Mở giao diện Trang Chủ
+            else:
+                messagebox.showerror("Thất bại", "Tên đăng nhập hoặc mật khẩu không đúng.")
+
+            cur.close()
+            conn.close()
+
+        except Exception as e:
+            messagebox.showerror("Lỗi kết nối", f"Không thể kết nối CSDL: {e}")
+    
+    
 
 
 # Tạo giao diện chính
