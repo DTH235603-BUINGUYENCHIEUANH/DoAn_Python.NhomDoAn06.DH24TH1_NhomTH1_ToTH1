@@ -143,11 +143,11 @@ def open_form_dichvu():
 
     # ===== Frame Button =====
     frame_Btn = Frame(dichvu, bg="#E6F2FA")
-    Button(frame_Btn, text="Thêm", width=8, command=them_dichvu, cursor="hand2").grid(row=0, column=0, padx=5)
-    Button(frame_Btn, text="Xoá", width=8, command=xoa_dichvu, cursor="hand2").grid(row=0, column=1, padx=5)
-    Button(frame_Btn, text="Sửa", width=8, command=sua_dichvu, cursor="hand2").grid(row=0, column=2, padx=5)
-    Button(frame_Btn, text="Lưu", width=8, command=luu_dichvu, cursor="hand2").grid(row=0, column=3, padx=5)
-    Button(frame_Btn, text="Thoát", width=8, command=dichvu.destroy, cursor="hand2").grid(row=0, column=4, padx=5)
+    Button(frame_Btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_dichvu, cursor="hand2").grid(row=0, column=0, padx=5)
+    Button(frame_Btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_dichvu, cursor="hand2").grid(row=0, column=1, padx=5)
+    Button(frame_Btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_dichvu, cursor="hand2").grid(row=0, column=2, padx=5)
+    Button(frame_Btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_dichvu, cursor="hand2").grid(row=0, column=3, padx=5)
+    Button(frame_Btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=dichvu.destroy, cursor="hand2").grid(row=0, column=4, padx=5)
     frame_Btn.pack(pady=5)
 
     load_data()

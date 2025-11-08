@@ -22,34 +22,34 @@ def open_form_phong():
         frmPhong.resizable(False, False)
 
         # ====== Tiêu đề ======
-        Label(frmPhong, text="QUẢN LÝ PHÒNG KHÁCH SẠN", font=("Times New Roman", 18, "bold"), bg="#E6F2FA").pack(pady=10)
+        Label(frmPhong, text="QUẢN LÝ PHÒNG KHÁCH SẠN", font=("Times New Roman", 18, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=10)
 
         # ====== Frame nhập thông tin ====== 
         frame_info = Frame(frmPhong, bg="#E6F2FA")
         frame_info.pack(pady=5, padx=10, fill="x")
 
-        Label(frame_info, text="Mã phòng", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Mã phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
         entry_maphong = Entry(frame_info, width=15)
         entry_maphong.grid(row=0, column=1, padx=5, pady=5)
 
-        Label(frame_info, text="Tên phòng", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Tên phòng",font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
         entry_tenphong = Entry(frame_info, width=15)
         entry_tenphong.grid(row=0, column=3, padx=5, pady=5)
 
-        Label(frame_info, text="Loại phòng", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Loại phòng",font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
         entry_loaiphong = Entry(frame_info, width=15)
         entry_loaiphong.grid(row=1, column=1, padx=5, pady=5)
 
-        Label(frame_info, text="Giá phòng", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Giá phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
         entry_giaphong = Entry(frame_info, width=15)
         entry_giaphong.grid(row=1, column=3, padx=5, pady=5)
 
-        Label(frame_info, text="Trạng thái", bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Trạng thái", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
         entry_trangthai = Entry(frame_info, width=15)
         entry_trangthai.grid(row=2, column=1, padx=5, pady=5)
 
         # ====== Bảng danh sách phòng ======
-        Label(frmPhong, text="Danh ságch phòng", font=("Times New Roman", 10, "bold"), bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
+        Label(frmPhong, text="Danh ságch phòng", font=("Times New Roman", 10, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
 
         columns = ("Mã phòng", "Tên phòng", "Loại phòng", "Giá phòng", "Trạng thái")
         tree = ttk.Treeview(frmPhong, columns=columns, show="headings", height=10)

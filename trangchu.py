@@ -38,7 +38,7 @@ def open_trang_chu():
         image = image.resize((300, 400))
         photo = ImageTk.PhotoImage(image)
         img_label = Label(frame_Image, image=photo)
-        img_label.image = photo  # Giữ tham chiếu
+        img_label.image = photo  # tham chiếu
         img_label.pack()
     except Exception as e:
         Label(frame_Image, text="Không thể tải ảnh", bg="#E6F2FA", fg="red").pack()
@@ -52,14 +52,16 @@ def open_trang_chu():
 
     # ==== Button phía dưới ====
     frame_Button = Frame(trangchu, bg="#E6F2FA")
-    Button(frame_Button, text="Dịch vụ", font=("Times New Roman", 14), background="#F5EFEB", foreground="#2F4156", command=open_form_dichvu).pack(side=LEFT, padx=10)
-    Button(frame_Button, text="Phòng", font=("Times New Roman", 14), background="#F5EFEB", foreground="#2F4156", command=open_form_phong).pack(side=LEFT, padx=10) #
-    Button(frame_Button, text="Đặt phòng", font=("Times New Roman", 14), background="#F5EFEB", foreground="#2F4156", command=open_form_datphong).pack(side=LEFT, padx=10)
-    Button(frame_Button, text="Đặt dịch vụ", font=("Times New Roman", 14), background="#F5EFEB", foreground="#2F4156", command=open_form_datdichvu).pack(side=LEFT, padx=10) #
-    Button(frame_Button, text="Thanh toán", font=("Times New Roman", 14), background="#F5EFEB", foreground="#2F4156", command=open_form_thanhtoan).pack(side=LEFT, padx=10)
-    Button(frame_Button, text="Danh sách khách hàng", font=("Times New Roman", 14), background="#F5EFEB", foreground="#2F4156", command=open_form_khachhang).pack(side=LEFT, padx=10)
+    frame_Button.grid(row=1, column=0, columnspan=2, sticky="s", pady=10, padx=5)
+    
+    Button(frame_Button, text="Dịch vụ", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=open_form_dichvu).pack(side=LEFT, padx=10)
+    Button(frame_Button, text="Phòng", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=open_form_phong).pack(side=LEFT, padx=10) #
+    Button(frame_Button, text="Đặt phòng", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=open_form_datphong).pack(side=LEFT, padx=10)
+    Button(frame_Button, text="Đặt dịch vụ", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=open_form_datdichvu).pack(side=LEFT, padx=10) #
+    Button(frame_Button, text="Thanh toán", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=open_form_thanhtoan).pack(side=LEFT, padx=10)
+    Button(frame_Button, text="Danh sách khách hàng", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=open_form_khachhang).pack(side=LEFT, padx=10)
 
 
-    frame_Button.grid(row=1, column=0, columnspan=2, sticky="s", pady=10)
+    
     trangchu.mainloop()
 

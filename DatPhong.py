@@ -6,7 +6,7 @@ from QLKS import conn, cur
 def open_form_datphong():
     frmDatPhong = Tk()
     frmDatPhong.title("Quản lý đặt phòng")
-    frmDatPhong.geometry("1000x600")
+    frmDatPhong.minsize(width=1200, height=800)
     frmDatPhong.configure(bg="#E6F2FA")
     frmDatPhong.resizable(False, False)
 
@@ -16,50 +16,45 @@ def open_form_datphong():
     frame_info = Frame(frmDatPhong, bg="#E6F2FA")
     frame_info.pack(anchor="center", pady=10)
 
-    Label(frame_info, text="Mã đặt phòng", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã đặt phòng", foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
     entry_madp = Entry(frame_info, width=15)
     entry_madp.grid(row=0, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Mã khách hàng", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã khách hàng", foreground="#2F4156",bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
     entry_makh = Entry(frame_info, width=15)
     entry_makh.grid(row=0, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Mã phòng", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã phòng", foreground="#2F4156",bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
     entry_maphong = Entry(frame_info, width=15)
     entry_maphong.grid(row=1, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Ngày đặt", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ngày đặt", foreground="#2F4156",bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
     date_ngaydat = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
     date_ngaydat.grid(row=1, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Ngày trả", bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ngày trả", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
     date_ngaytra = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
     date_ngaytra.grid(row=2, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Số ngày ở", bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Số ngày ở", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
     entry_songayo = Entry(frame_info, width=12)
     entry_songayo.grid(row=2, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Số lượng khách", bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Số lượng khách", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
     entry_soluong = Entry(frame_info, width=12)
     entry_soluong.grid(row=3, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Mã khách hàng khác", bg="#E6F2FA").grid(row=3, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã khách hàng khác", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=2, padx=5, pady=5, sticky="w")
     entry_makhkhac = Entry(frame_info, width=15)
     entry_makhkhac.grid(row=3, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Thành tiền", bg="#E6F2FA").grid(row=4, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Thành tiền", foreground="#2F4156",bg="#E6F2FA").grid(row=4, column=0, padx=5, pady=5, sticky="w")
     entry_thanhtien = Entry(frame_info, width=15)
     entry_thanhtien.grid(row=4, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Ghi chú", bg="#E6F2FA").grid(row=5, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ghi chú", foreground="#2F4156",bg="#E6F2FA").grid(row=5, column=0, padx=5, pady=5, sticky="w")
     entry_ghichu = Entry(frame_info, width=40)
     entry_ghichu.grid(row=5, column=1, columnspan=3, padx=5, pady=5, sticky="w")
-
-    # ===== Frame nút =====
-    frame_btn = Frame(frmDatPhong, bg="#E6F2FA")
-    frame_btn.pack(pady=10)
-    frame_btn.grid_columnconfigure((0,1,2,3,4,5), weight=1)
 
     # ===== Chức năng tìm kiếm ===== (Pack trước Treeview để tránh bị che)
     frame_TimKiem = Frame(frmDatPhong, bg="#E6F2FA")  
@@ -85,9 +80,32 @@ def open_form_datphong():
     for col in columns:
         tree.heading(col, text=col)
         tree.column(col, width=100, anchor="center")
-    tree.pack(padx=10, pady=10, fill="both")
+    tree.pack(padx=10, pady=10, fill="x")
 
     # ===== Hàm xử lý =====
+    # Hàm tính số ngày ở và thành tiền tự động
+    def tinh_songayo_va_thanhtien():
+        try:
+            ngay_dat = date_ngaydat.get_date()
+            ngay_tra = date_ngaytra.get_date()
+            if ngay_tra <= ngay_dat:
+                messagebox.showwarning("Lỗi", "Ngày trả phải sau ngày đặt.")
+                return None, None
+            songayo = (ngay_tra - ngay_dat).days
+            maphong = entry_maphong.get()
+            cur.execute("SELECT Gia FROM PHONG WHERE MaPhong = %s", (maphong,))
+            result = cur.fetchone()
+            if not result:
+                messagebox.showwarning("Lỗi", f"Không tìm thấy phòng {maphong}.")
+                return None, None
+            gia = float(result[0])
+            thanhtien = songayo * gia
+            return songayo, thanhtien
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi tính toán: {str(e)}")
+            return None, None
+
+    # Clear
     def clear_input():
         entry_madp.delete(0, END)
         entry_makh.delete(0, END)
@@ -100,6 +118,7 @@ def open_form_datphong():
         date_ngaydat.set_date("2025-01-01")
         date_ngaytra.set_date("2025-01-02")
 
+    # Load
     def load_data():
         if conn is None or cur is None:
             messagebox.showerror("Lỗi", "Không thể kết nối cơ sở dữ liệu.")
@@ -111,6 +130,130 @@ def open_form_datphong():
                 tree.insert("", END, values=row)
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi tải dữ liệu: {str(e)}")
+    
+    # Thêm
+    def them_datphong():
+        madp = entry_madp.get()
+        makh = entry_makh.get()
+        maphong = entry_maphong.get()
+        ngaydat = date_ngaydat.get_date()
+        ngaytra = date_ngaytra.get_date()
+        soluong = entry_soluong.get()
+        makhkhac = entry_makhkhac.get()
+        ghichu = entry_ghichu.get()
+        
+        if not madp or not makh or not maphong:
+            messagebox.showwarning("Thiếu dữ liệu", "Vui lòng nhập đầy đủ Mã đặt phòng, Mã KH, Mã phòng.")
+            return
+        
+        songayo, thanhtien = tinh_songayo_va_thanhtien()
+        if songayo is None or thanhtien is None:
+            return
+        
+        try:
+            cur.execute("""INSERT INTO DATPHONG (MaDatPhong, MaKHDatPhong, MaPhong, NgayDat, NgayTra, SoNgayO, SoLuongKhach, MaKHKhac, ThanhTien, GhiChu)
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        (madp, makh, maphong, ngaydat, ngaytra, songayo, soluong, makhkhac, thanhtien, ghichu))
+            conn.commit()
+            load_data()
+            clear_input()
+            messagebox.showinfo("Thành công", "Đã thêm đặt phòng.")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi thêm: {str(e)}")
+
+    # Xoá
+    def xoa_datphong():
+        selected = tree.selection()
+        if not selected:
+            messagebox.showwarning("Chưa chọn", "Hãy chọn 1 dòng để xóa.")
+            return
+        madp = tree.item(selected)["values"][0]
+        confirm = messagebox.askyesno("Xác nhận", f"Bạn có chắc muốn xóa đặt phòng '{madp}'?")
+        if not confirm:
+            return
+        try:
+            cur.execute("DELETE FROM DATPHONG WHERE MaDatPhong = %s", (madp,))
+            conn.commit()
+            load_data()
+            messagebox.showinfo("Đã xóa", f"Đặt phòng {madp} đã được xóa.")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi xóa: {str(e)}")
+
+    # Sửa
+    def sua_datphong():
+        selected = tree.selection()
+        if not selected:
+            messagebox.showwarning("Chưa chọn", "Hãy chọn 1 dòng để sửa.")
+            return
+        values = tree.item(selected)["values"]
+        entry_madp.delete(0, END)
+        entry_madp.insert(0, values[0])
+        entry_madp.config(state='disabled')  # Khóa Mã đặt phòng
+        entry_makh.delete(0, END)
+        entry_makh.insert(0, values[1])
+        entry_maphong.delete(0, END)
+        entry_maphong.insert(0, values[2])
+        date_ngaydat.set_date(values[3])
+        date_ngaytra.set_date(values[4])
+        entry_songayo.delete(0, END)
+
+        madp = entry_madp.get()
+        makh = entry_makh.get()
+        maphong = entry_maphong.get()
+        ngaydat = date_ngaydat.get_date()
+        ngaytra = date_ngaytra.get_date()
+        soluong = entry_soluong.get()
+        makhkhac = entry_makhkhac.get()
+        ghichu = entry_ghichu.get()
+        
+        if not madp or not makh or not maphong:
+            messagebox.showwarning("Thiếu dữ liệu", "Vui lòng nhập đầy đủ thông tin.")
+            return
+        
+        songayo, thanhtien = tinh_songayo_va_thanhtien()
+        if songayo is None or thanhtien is None:
+            return
+        
+        try:
+            cur.execute("""UPDATE DATPHONG SET MaKHDatPhong=%s, MaPhong=%s, NgayDat=%s, NgayTra=%s, SoNgayO=%s, SoLuongKhach=%s, MaKHKhac=%s, ThanhTien=%s, GhiChu=%s WHERE MaDatPhong=%s""",
+                        (makh, maphong, ngaydat, ngaytra, songayo, soluong, makhkhac, thanhtien, ghichu, madp))
+            conn.commit()
+            load_data()
+            clear_input()
+            entry_madp.config(state='normal')  # Mở khóa lại
+            messagebox.showinfo("Thành công", "Cập nhật thành công.")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi lưu: {str(e)}")
+
+    # Lưu
+    def luu_datphong():
+        madp = entry_madp.get()
+        makh = entry_makh.get()
+        maphong = entry_maphong.get()
+        ngaydat = date_ngaydat.get_date()
+        ngaytra = date_ngaytra.get_date()
+        soluong = entry_soluong.get()
+        makhkhac = entry_makhkhac.get()
+        ghichu = entry_ghichu.get()
+        
+        if not madp or not makh or not maphong:
+            messagebox.showwarning("Thiếu dữ liệu", "Vui lòng nhập đầy đủ thông tin.")
+            return
+        
+        songayo, thanhtien = tinh_songayo_va_thanhtien()
+        if songayo is None or thanhtien is None:
+            return
+        
+        try:
+            cur.execute("""UPDATE DATPHONG SET MaKHDatPhong=%s, MaPhong=%s, NgayDat=%s, NgayTra=%s, SoNgayO=%s, SoLuongKhach=%s, MaKHKhac=%s, ThanhTien=%s, GhiChu=%s WHERE MaDatPhong=%s""",
+                        (makh, maphong, ngaydat, ngaytra, songayo, soluong, makhkhac, thanhtien, ghichu, madp))
+            conn.commit()
+            load_data()
+            clear_input()
+            entry_madp.config(state='normal')  # Mở khóa lại
+            messagebox.showinfo("Thành công", "Cập nhật thành công.")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi lưu: {str(e)}")
 
     # Hàm tìm kiếm (lọc theo MaKHDatPhong, điền vào Entry nếu tìm thấy)
     def timkiemtheo_MaKHDatDV():
@@ -118,10 +261,9 @@ def open_form_datphong():
         if not search_term:
             messagebox.showwarning("Cảnh báo", "Vui lòng nhập mã KH để tìm kiếm.")
             return
-        
-        tree.delete(*tree.get_children())  # Xóa Treeview trước khi query
-        
+
         try:
+            tree.delete(*tree.get_children())  # Xóa Treeview trước khi query
             cur.execute("SELECT MaDatPhong, MaKHDatPhong, MaPhong, NgayDat, NgayTra, SoNgayO, SoLuongKhach, MaKHKhac, ThanhTien, GhiChu FROM DATPHONG WHERE MaKHDatPhong LIKE %s", (f"%{search_term}%",))
             results = cur.fetchall()
             
@@ -159,9 +301,18 @@ def open_form_datphong():
     Button(frame_TimKiem, text="Tìm kiếm", width=8, bg="#00AEEF", fg="white", command=timkiemtheo_MaKHDatDV).grid(row=2, column=0, columnspan=3, padx=5)
 
     # ===== Nút =====
-    Button(frame_btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input).grid(row=0, column=0, padx=5)
-    Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmDatPhong.quit).grid(row=0, column=1, padx=5)
-    Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data).grid(row=0, column=2, padx=5)
+    # ===== Frame nút =====
+    frame_btn = Frame(frmDatPhong, bg="#E6F2FA")
+    frame_btn.pack(anchor="center", pady=20)
 
+    Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_datphong).pack(side=LEFT, padx=5)
+    Button(frame_btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_datphong).pack(side=LEFT, padx=5)
+    Button(frame_btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_datphong).pack(side=LEFT, padx=5)
+    Button(frame_btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_datphong).pack(side=LEFT, padx=5)
+    Button(frame_btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input).pack(side=LEFT, padx=5)
+    Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmDatPhong.quit).pack(side=LEFT, padx=5)
+    Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data).pack(side=LEFT, padx=5)
+
+    frmDatPhong.update_idletasks()
     load_data()
     frmDatPhong.mainloop()
