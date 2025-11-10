@@ -4,7 +4,7 @@ from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur
 
-def open_form_thanhtoan():
+def open_form_thanhtoan(vaitro):
     # ====== Hàm canh giữa cửa sổ ======
     def center_window(win, w=700, h=500):
         ws = win.winfo_screenwidth()
@@ -211,14 +211,32 @@ def open_form_thanhtoan():
 
     # ===== Frame Button =====
     frame_Btn = Frame(hoadon)
-    Button(frame_Btn, text="Thêm", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=them_thanhtoan).grid(row=0, column=0, padx=5)
-    Button(frame_Btn, text="Xoá", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=xoa_thanhtoan).grid(row=0, column=1, padx=5)
-    Button(frame_Btn, text="Sửa", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=sua_thanhtoan).grid(row=0, column=2, padx=5)
-    Button(frame_Btn, text="Lưu", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=luu_thanhtoan).grid(row=0, column=3, padx=5)
-    Button(frame_Btn, text="Hủy", width=8, bg="#00AEEF", fg="white", cursor="hand2", command=clear_input).grid(row=0, column=4, padx=5)
-    Button(frame_Btn, text="Thoát", width=8, font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=hoadon.quit).grid(row=0, column=5, padx=5)
+    btn_Them = Button(frame_Btn, text="Thêm", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=them_thanhtoan)
+    btn_Them.grid(row=0, column=0, padx=5)
+    btn_Xoa = Button(frame_Btn, text="Xoá", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=xoa_thanhtoan)
+    btn_Xoa.grid(row=0, column=1, padx=5)
+    btn_Sua = Button(frame_Btn, text="Sửa", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=sua_thanhtoan)
+    btn_Sua.grid(row=0, column=2, padx=5)
+    btn_Luu = Button(frame_Btn, text="Lưu", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=luu_thanhtoan)
+    btn_Luu.grid(row=0, column=3, padx=5)
+    btn_Huy = Button(frame_Btn, text="Hủy", width=8, bg="#00AEEF", fg="white", cursor="hand2", command=clear_input)
+    btn_Huy.grid(row=0, column=4, padx=5)
+    btn_Thoat = Button(frame_Btn, text="Thoát", width=8, font=("Time news roman",10), foreground="#2F4156", background="#E6F2FA", command=hoadon.quit)
+    btn_Thoat.grid(row=0, column=5, padx=5)
+    btn_Refresh = Button(frame_Btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Refresh.grid(row=0, column=6, padx=5)
+
     frame_Btn.pack(pady=5)
     frame_Btn.config(bg="#E6F2FA")
+
+    # ===== Phân quyền =====
+    if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
+        btn_Them.config(state=DISABLED, bg="gray")
+        btn_Xoa.config(state=DISABLED, bg="gray")
+        btn_Sua.config(state=DISABLED, bg="gray")
+        btn_Luu.config(state=DISABLED, bg="gray")
+        btn_Huy.config(state=DISABLED, bg="gray")
+        btn_Refresh.config(state=DISABLED, bg="gray")
 
     load_data()
     hoadon.mainloop()

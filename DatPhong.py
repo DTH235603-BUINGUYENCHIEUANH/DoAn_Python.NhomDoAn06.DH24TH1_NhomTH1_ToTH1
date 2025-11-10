@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from QLKS import conn, cur
 
-def open_form_datphong():
+def open_form_datphong(vaitro):
     frmDatPhong = Tk()
     frmDatPhong.title("Quản lý đặt phòng")
     frmDatPhong.minsize(width=1200, height=800)
@@ -24,37 +24,46 @@ def open_form_datphong():
     entry_makh = Entry(frame_info, width=15)
     entry_makh.grid(row=0, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Mã phòng", foreground="#2F4156",bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Tên phòng", foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    cb_tenphong = ttk.Combobox(frame_info, width=20, state="readonly")
+    cb_tenphong.grid(row=1, column=1, padx=5, pady=5)
+
+    Label(frame_info, text="Mã phòng", foreground="#2F4156",bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
     entry_maphong = Entry(frame_info, width=15)
-    entry_maphong.grid(row=1, column=1, padx=5, pady=5)
+    entry_maphong.grid(row=1, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Ngày đặt", foreground="#2F4156",bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ngày đặt", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
     date_ngaydat = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
-    date_ngaydat.grid(row=1, column=3, padx=5, pady=5)
+    date_ngaydat.grid(row=2, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Ngày trả", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ngày trả", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
     date_ngaytra = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
-    date_ngaytra.grid(row=2, column=1, padx=5, pady=5)
+    date_ngaytra.grid(row=2, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Số ngày ở", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Số ngày ở", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
     entry_songayo = Entry(frame_info, width=12)
-    entry_songayo.grid(row=2, column=3, padx=5, pady=5)
+    entry_songayo.grid(row=3, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Số lượng khách", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Số lượng khách", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=2, padx=5, pady=5, sticky="w")
     entry_soluong = Entry(frame_info, width=12)
-    entry_soluong.grid(row=3, column=1, padx=5, pady=5)
+    entry_soluong.grid(row=3, column=3, padx=5, pady=5)
 
-    Label(frame_info, text="Mã khách hàng khác", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã khách hàng khác", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=4, padx=5, pady=5, sticky="w")
     entry_makhkhac = Entry(frame_info, width=15)
-    entry_makhkhac.grid(row=3, column=3, padx=5, pady=5)
+    entry_makhkhac.grid(row=3, column=5, padx=5, pady=5)
 
     Label(frame_info, text="Thành tiền", foreground="#2F4156",bg="#E6F2FA").grid(row=4, column=0, padx=5, pady=5, sticky="w")
     entry_thanhtien = Entry(frame_info, width=15)
     entry_thanhtien.grid(row=4, column=1, padx=5, pady=5)
 
-    Label(frame_info, text="Ghi chú", foreground="#2F4156",bg="#E6F2FA").grid(row=5, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ghi chú", foreground="#2F4156",bg="#E6F2FA").grid(row=4, column=2, padx=5, pady=5, sticky="w")
     entry_ghichu = Entry(frame_info, width=40)
-    entry_ghichu.grid(row=5, column=1, columnspan=3, padx=5, pady=5, sticky="w")
+    entry_ghichu.grid(row=4, column=3, columnspan=3, padx=5, pady=5, sticky="w")
+
+    # Căn đều các cột trong frame_info
+    for i in range(6):  # vì cậu dùng 6 cột (0 -> 5)
+        frame_info.grid_columnconfigure(i, weight=1, uniform="col")
+
 
     # ===== Chức năng tìm kiếm ===== (Pack trước Treeview để tránh bị che)
     frame_TimKiem = Frame(frmDatPhong, bg="#E6F2FA")  
@@ -104,6 +113,25 @@ def open_form_datphong():
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi tính toán: {str(e)}")
             return None, None
+
+    def load_phong_to_combobox():
+        try:
+            cur.execute("SELECT MaPhong, TenPhong FROM PHONG")
+            phong_data = cur.fetchall()
+            ten_phong_list = [row[1] for row in phong_data]
+            cb_tenphong["values"] = ten_phong_list
+            # Lưu dict để tra ngược Tên -> Mã
+            cb_tenphong.phong_dict = {row[1]: row[0] for row in phong_data}
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi load phòng: {str(e)}")
+
+    def on_select_phong(event):
+        ten_phong = cb_tenphong.get()
+        if ten_phong in cb_tenphong.phong_dict:
+            entry_maphong.delete(0, END)
+            entry_maphong.insert(0, cb_tenphong.phong_dict[ten_phong])
+
+    cb_tenphong.bind("<<ComboboxSelected>>", on_select_phong)
 
     # Clear
     def clear_input():
@@ -305,14 +333,31 @@ def open_form_datphong():
     frame_btn = Frame(frmDatPhong, bg="#E6F2FA")
     frame_btn.pack(anchor="center", pady=20)
 
-    Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_datphong).pack(side=LEFT, padx=5)
-    Button(frame_btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_datphong).pack(side=LEFT, padx=5)
-    Button(frame_btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_datphong).pack(side=LEFT, padx=5)
-    Button(frame_btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_datphong).pack(side=LEFT, padx=5)
-    Button(frame_btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input).pack(side=LEFT, padx=5)
-    Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmDatPhong.quit).pack(side=LEFT, padx=5)
-    Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data).pack(side=LEFT, padx=5)
+    btn_Them = Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_datphong)
+    btn_Them.pack(side=LEFT, padx=5)
+    btn_Xoa = Button(frame_btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_datphong)
+    btn_Xoa.pack(side=LEFT, padx=5)
+    btn_Sua = Button(frame_btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_datphong)
+    btn_Sua.pack(side=LEFT, padx=5)
+    btn_Luu = Button(frame_btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_datphong)
+    btn_Luu.pack(side=LEFT, padx=5)
+    btn_Huy = Button(frame_btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input)
+    btn_Huy.pack(side=LEFT, padx=5)
+    btn_Thoat = Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmDatPhong.quit)
+    btn_Thoat.pack(side=LEFT, padx=5)
+    btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Refresh.pack(side=LEFT, padx=5)
+
+    # ===== Phân quyền =====
+    if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
+        btn_Them.config(state=DISABLED, bg="gray")
+        btn_Xoa.config(state=DISABLED, bg="gray")
+        btn_Sua.config(state=DISABLED, bg="gray")
+        btn_Luu.config(state=DISABLED, bg="gray")
+        btn_Huy.config(state=DISABLED, bg="gray")
+        btn_Refresh.config(state=DISABLED, bg="gray")
 
     frmDatPhong.update_idletasks()
     load_data()
+    load_phong_to_combobox()
     frmDatPhong.mainloop()

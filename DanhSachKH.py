@@ -4,7 +4,7 @@ from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
 
-def open_form_khachhang():
+def open_form_khachhang(vaitro):
 
     # ====== Hàm canh giữa cửa sổ ======
     def center_window(win, w=700, h=500):
@@ -186,11 +186,29 @@ def open_form_khachhang():
     frame_btn = Frame(frmKhachHang, bg="#E6F2FA")
     frame_btn.pack(pady=5)
 
-    Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_khachang).grid(row=0, column=0, padx=5)
-    Button(frame_btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_khachhang).grid(row=0, column=1, padx=5)
-    Button(frame_btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_khachhang).grid(row=0, column=2, padx=5)
-    Button(frame_btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input).grid(row=0, column=3, padx=5)
-    Button(frame_btn, text="Xóa", width=8, bg="#00AEEF", fg="white", command=xoa_khachhang).grid(row=0, column=4, padx=5)
+    btn_Them = Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_khachang)
+    btn_Them.grid(row=0, column=0, padx=5)
+    btn_Xoa = Button(frame_btn, text="Xóa", width=8, bg="#00AEEF", fg="white", command=xoa_khachhang)
+    btn_Xoa.grid(row=0, column=1, padx=5)
+    btn_Sua = Button(frame_btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_khachhang)
+    btn_Sua.grid(row=0, column=2, padx=5)
+    btn_Luu = Button(frame_btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_khachhang)
+    btn_Luu.grid(row=0, column=3, padx=5)
+    btn_Huy = Button(frame_btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input)
+    btn_Huy.grid(row=0, column=4, padx=5)
+    btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Refresh.grid(row=0, column=5, padx=5)
+    btn_Thoat = Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmKhachHang.quit)
+    btn_Thoat.grid(row=0, column=6, padx=5)
+
+    # ===== Phân quyền =====
+    if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
+        btn_Them.config(state=DISABLED, bg="gray")
+        btn_Xoa.config(state=DISABLED, bg="gray")
+        btn_Sua.config(state=DISABLED, bg="gray")
+        btn_Luu.config(state=DISABLED, bg="gray")
+        btn_Huy.config(state=DISABLED, bg="gray")
+        btn_Refresh.config(state=DISABLED, bg="gray")
     
     load_data()
     frmKhachHang.mainloop()

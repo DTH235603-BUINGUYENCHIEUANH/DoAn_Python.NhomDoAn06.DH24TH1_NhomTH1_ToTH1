@@ -29,9 +29,10 @@ def DangNhap():  # xử lý btn Đăng Nhập
             user = cur.fetchone()
 
             if user:
-                messagebox.showinfo("Thành công", f"Đăng nhập thành công với tài khoản: {ten}")
+                vaitro = user[3]
+                messagebox.showinfo("Thành công", f"Đăng nhập thành công với tài khoản: {ten} ({vaitro})")
                 frmDangNhap.destroy()      # Đóng cửa sổ đăng nhập
-                open_trang_chu()           # Mở giao diện Trang Chủ
+                open_trang_chu(vaitro)           # Mở giao diện Trang Chủ
             else:
                 messagebox.showerror("Thất bại", "Tên đăng nhập hoặc mật khẩu không đúng.")
 

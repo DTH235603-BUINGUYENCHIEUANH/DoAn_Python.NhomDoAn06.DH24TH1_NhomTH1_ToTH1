@@ -4,7 +4,7 @@ from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
 
-def open_form_dichvu():
+def open_form_dichvu(vaitro):
     # ====== Hàm canh giữa cửa sổ ======
     def center_window(win, w=700, h=500):
         ws = win.winfo_screenwidth()
@@ -27,13 +27,15 @@ def open_form_dichvu():
 
     # ==== Frame nhập thông tin ==== 
     frame_Info = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Info, text="Mã dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0)
+    Label(frame_Info, text="Mã dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2)
     entry_Madv = Entry(frame_Info, width=10)
-    entry_Madv.grid(row=0, column=1)
+    entry_Madv.grid(row=0, column=3)
 
-    Label(frame_Info, text="Tên dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2)
-    entry_Tendv = Entry(frame_Info, width=20)
-    entry_Tendv.grid(row=0, column=3)
+    Label(frame_Info, text="Tên dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0)
+    entry_Tendv = Entry(frame_Info, width=10)
+    entry_Tendv.grid(row=0, column=1)
+    '''cb_Tendv = ttk.Combobox(frame_Info, width=20, state="readonly")   # <== thay Entry bằng Combobox
+    cb_Tendv.grid(row=0, column=1)'''
 
     Label(frame_Info, text="Giá dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=4)
     entry_GiaDV = Entry(frame_Info, width=10)
@@ -55,6 +57,28 @@ def open_form_dichvu():
     tree.pack(padx=10, pady=5, fill="both")
 
     # ===== Hàm xử lý =====
+    # ====== Hàm nạp dữ liệu cho Combobox Tên dịch vụ ======
+    '''def load_dichvu_to_combobox():
+        cur.execute("SELECT MaDV, TenDV, GiaDV FROM DICHVU")
+        dichvu_data = cur.fetchall()
+        ten_dichvu_list = [row[1] for row in dichvu_data]
+        cb_Tendv["values"] = ten_dichvu_list
+
+        # Lưu lại dict để dễ truy xuất ngược theo tên dịch vụ
+        cb_Tendv.dichvu_dict = {row[1]: (row[0], row[2]) for row in dichvu_data}
+
+    # ====== Khi chọn tên dịch vụ trong combobox ======
+    def on_select_dichvu(event):
+        ten_dv = cb_Tendv.get()
+        if ten_dv in cb_Tendv.dichvu_dict:
+            madv, giadv = cb_Tendv.dichvu_dict[ten_dv]
+            entry_Madv.delete(0, END)
+            entry_Madv.insert(0, madv)
+            entry_GiaDV.delete(0, END)
+            entry_GiaDV.insert(0, giadv)
+
+    cb_Tendv.bind("<<ComboboxSelected>>", on_select_dichvu)'''
+
     def clear_input():
         entry_Madv.delete(0, END)
         entry_Tendv.delete(0, END)
@@ -88,6 +112,7 @@ def open_form_dichvu():
             conn.commit()
             load_data() 
             clear_input()
+            #load_dichvu_to_combobox() #Cập nhật dịch vụ mới cho combobox dịch vụ
             messagebox.showinfo("Thành công", "Đã thêm dịch vụ mới.")
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi thêm: {e}")
@@ -107,6 +132,7 @@ def open_form_dichvu():
             conn.commit()
             load_data()
             clear_input()
+            #load_dichvu_to_combobox()
             messagebox.showinfo("Đã xóa", f"Dịch vụ {madv} đã được xóa.")
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi xóa: {e}")
@@ -136,6 +162,7 @@ def open_form_dichvu():
             conn.commit()
             load_data()
             clear_input()
+            #load_dichvu_to_combobox() 
             messagebox.showinfo("Thành công", "Cập nhật thông tin thành công.")
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi lưu: {e}")
@@ -143,12 +170,32 @@ def open_form_dichvu():
 
     # ===== Frame Button =====
     frame_Btn = Frame(dichvu, bg="#E6F2FA")
-    Button(frame_Btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_dichvu, cursor="hand2").grid(row=0, column=0, padx=5)
-    Button(frame_Btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_dichvu, cursor="hand2").grid(row=0, column=1, padx=5)
-    Button(frame_Btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_dichvu, cursor="hand2").grid(row=0, column=2, padx=5)
-    Button(frame_Btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_dichvu, cursor="hand2").grid(row=0, column=3, padx=5)
-    Button(frame_Btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=dichvu.destroy, cursor="hand2").grid(row=0, column=4, padx=5)
     frame_Btn.pack(pady=5)
 
+    btn_Them = Button(frame_Btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_dichvu, cursor="hand2")
+    btn_Them.grid(row=0, column=0, padx=5)
+    btn_Xoa = Button(frame_Btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_dichvu, cursor="hand2")
+    btn_Xoa.grid(row=0, column=1, padx=5)
+    btn_Sua = Button(frame_Btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_dichvu, cursor="hand2")
+    btn_Sua.grid(row=0, column=2, padx=5)
+    btn_Luu = Button(frame_Btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_dichvu, cursor="hand2")
+    btn_Luu.grid(row=0, column=3, padx=5)
+    btn_Thoat = Button(frame_Btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=dichvu.destroy, cursor="hand2")
+    btn_Thoat.grid(row=0, column=4, padx=5)
+    btn_Huy = Button(frame_Btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input)
+    btn_Huy.grid(row=0, column=5, padx=5)
+    btn_Refresh = Button(frame_Btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Refresh.grid(row=0, column=6, padx=5)
+   
+    # ===== Phân quyền =====
+    if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
+        btn_Them.config(state=DISABLED, bg="gray")
+        btn_Xoa.config(state=DISABLED, bg="gray")
+        btn_Sua.config(state=DISABLED, bg="gray")
+        btn_Luu.config(state=DISABLED, bg="gray")
+        btn_Huy.config(state=DISABLED, bg="gray")
+        btn_Refresh.config(state=DISABLED, bg="gray")
+
     load_data()
+    #load_dichvu_to_combobox()
     dichvu.mainloop()
