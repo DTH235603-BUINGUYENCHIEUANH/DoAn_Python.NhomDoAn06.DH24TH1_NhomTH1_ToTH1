@@ -6,6 +6,7 @@ from QLKS import conn, cur
 from Menu import create_menu
 
 def open_form_DichVu(vaitro):
+            
     # ====== Hàm canh giữa cửa sổ ======
     def center_window(win, w=800, h=600):
         ws = win.winfo_screenwidth()

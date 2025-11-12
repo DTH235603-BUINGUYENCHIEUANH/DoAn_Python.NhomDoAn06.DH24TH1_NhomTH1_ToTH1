@@ -1,11 +1,10 @@
 from tkinter import *
 import importlib
-
 def create_menu(parent, current_name, vaitro):
     # ===== Danh sách các nút menu =====
     menu_items = [
-        ("Phong", "Phòng"),
         ("DichVu", "Dịch vụ"),
+        ("Phong", "Phòng"),
         ("DatDichVu", "Đặt dịch vụ"),
         ("DatPhong", "Đặt phòng"),
         ("ThanhToan", "Thanh toán"),

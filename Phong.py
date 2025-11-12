@@ -19,8 +19,10 @@ def open_form_Phong(vaitro):
         frmPhong.title("Phòng khách sạn")
         frmPhong.minsize(width=900, height=600)
         center_window(frmPhong)
+        
         frmPhong.configure(bg="#E6F2FA")
         frmPhong.resizable(False, False)
+
         # ===== Hiển thị menu =====
         create_menu(frmPhong, "Phong", vaitro)
     

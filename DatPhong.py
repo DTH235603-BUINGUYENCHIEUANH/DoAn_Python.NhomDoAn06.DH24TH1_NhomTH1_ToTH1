@@ -4,15 +4,15 @@ from tkcalendar import DateEntry
 from QLKS import conn, cur
 from Menu import create_menu
 
-# ====== Hàm canh giữa cửa sổ ======
-def center_window(win, w=800, h=600):
-    ws = win.winfo_screenwidth()
-    hs = win.winfo_screenheight()
-    x = (ws // 2) - (w // 2)
-    y = (hs // 2) - (h // 2)
-    win.geometry(f'{w}x{h}+{x}+{y}')
-
 def open_form_DatPhong(vaitro):
+    # ====== Hàm canh giữa cửa sổ ======
+    def center_window(win, w=800, h=600):
+        ws = win.winfo_screenwidth()
+        hs = win.winfo_screenheight()
+        x = (ws // 2) - (w // 2)
+        y = (hs // 2) - (h // 2)
+        win.geometry(f'{w}x{h}+{x}+{y}')
+        
     frmDatPhong = Tk()
     frmDatPhong.title("Quản lý đặt phòng")
     frmDatPhong.minsize(width=800, height=600)
