@@ -2,6 +2,9 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
+from datetime import datetime, date
+from tkinter import filedialog
+import csv
 from QLKS import conn, cur
 from Menu import create_menu
 
@@ -221,9 +224,93 @@ def open_form_ThanhToan(vaitro):
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi tính tiền: {e}")
             return 0
+        
+    # ===== Hàm xuất hoá đơn ===== 
+    def xuat_hoadon_chitiet():
+        selected = tree.selection()
+        if not selected:
+            messagebox.showwarning("Chưa chọn", "Hãy chọn 1 hoá đơn để xuất.")
+            return
+        
+        values = tree.item(selected)["values"]
+        mahd = values[0]
+        manvtt = values[1]
+        makh = values[2]
+        phuongthuctt = values[3]
+        tongtien = values[4]
 
+        # Chọn nơi lưu file
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV files", "*.csv")],
+            initialfile=f"HoaDon_{mahd}.csv",
+            initialdir="C:/Users/YourUserName/Documents"
+        )
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, mode='w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+
+                # ===== Thông tin hoá đơn chính =====
+                writer.writerow([f"Hoá đơn: {mahd}"])
+                writer.writerow([f"Mã NV Thanh toán: {manvtt}"])
+                writer.writerow([f"Mã KH: {makh}"])
+                writer.writerow([f"Phương thức TT: {phuongthuctt}"])
+                writer.writerow([f"Tổng tiền: {tongtien}"])
+                writer.writerow([])
+
+                # ===== Chi tiết phòng =====
+                writer.writerow(["--- Chi tiết phòng ---"])
+                
+                # Sử dụng cursor trả về dict để lấy theo tên cột
+                dict_cur = conn.cursor(dictionary=True)
+                dict_cur.execute("SELECT * FROM DATPHONG WHERE MaKHDatPhong=%s", (makh,))
+                rows = dict_cur.fetchall()
+
+                if rows:
+                    # Lấy tên cột để ghi tiêu đề
+                    headers = list(rows[0].keys())
+                    writer.writerow(headers)
+                    for row in rows:
+                        row_out = []
+                        for col in headers:
+                            val = row[col]
+                            # Format ngày nếu là datetime/date
+                            if isinstance(val, (datetime, date)):
+                                val = val.strftime("%d/%m/%Y")
+                            row_out.append(val)
+                        writer.writerow(row_out)
+                writer.writerow([])
+
+                # ===== Chi tiết dịch vụ =====
+                writer.writerow(["--- Chi tiết dịch vụ ---"])
+                dict_cur.execute("SELECT * FROM DATDICHVU WHERE MaKHDatDV=%s", (makh,))
+                rows_dv = dict_cur.fetchall()
+                if rows_dv:
+                    headers_dv = list(rows_dv[0].keys())
+                    writer.writerow(headers_dv)
+                    for row in rows_dv:
+                        row_out = []
+                        for col in headers_dv:
+                            val = row[col]
+                            # Format ngày nếu là datetime/date
+                            if isinstance(val, (datetime, date)):
+                                val = val.strftime("%d/%m/%Y")
+                            row_out.append(val)
+                        writer.writerow(row_out)
+
+                dict_cur.close()
+
+            messagebox.showinfo("Thành công", f"Hoá đơn {mahd} đã được xuất ra {file_path}")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi xuất hoá đơn: {e}")
+        
     # ===== Frame Button =====
     frame_Btn = Frame(hoadon)
+    frame_Btn.pack(pady=5)
+
     btn_Them = Button(frame_Btn, text="Thêm", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#00AEEF", command=them_thanhtoan)
     btn_Them.grid(row=0, column=0, padx=5)
     btn_Xoa = Button(frame_Btn, text="Xoá", width=8,  font=("Time news roman",10), foreground="#2F4156", background="#00AEEF", command=xoa_thanhtoan)
@@ -238,8 +325,8 @@ def open_form_ThanhToan(vaitro):
     btn_Thoat.grid(row=0, column=5, padx=5)
     btn_Refresh = Button(frame_Btn, text="Refresh", width=8, background="#00AEEF", foreground="#2F4156", command=load_data)
     btn_Refresh.grid(row=0, column=6, padx=5)
-
-    frame_Btn.pack(pady=5)
+    btn_XuatChiTiet = Button(frame_Btn, text="Xuất HD Chi tiết", width=15, font=("Time news roman",10), foreground="#2F4156", background="#00AEEF", command=xuat_hoadon_chitiet)
+    btn_XuatChiTiet.grid(row=0, column=7, padx=5)
 
     # ===== Phân quyền =====
     if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
@@ -249,6 +336,7 @@ def open_form_ThanhToan(vaitro):
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
         btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_XuatChiTiet.config(state=DISABLED, bg="gray")
 
     load_data()
     hoadon.mainloop()

@@ -2,6 +2,9 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
+import csv
+from tkinter import filedialog, messagebox
+from datetime import datetime, date
 from QLKS import conn, cur  
 from Menu import create_menu
 
@@ -204,6 +207,39 @@ def open_form_NhanVien(vaitro):
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi lưu: {str(e)}")
     
+    # ===== In thông tin toàn bộ nhân viên =====
+    def xuat_nhanvien():
+        # Chọn nơi lưu file
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV files", "*.csv")],
+            initialfile="DanhSachNhanVien.csv",
+            initialdir="C:/Users/YourUserName/Documents"
+        )
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, mode='w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                # ===== Ghi tiêu đề =====
+                writer.writerow(["Mã nhân viên", "Họ tên NV", "Giới tính", "Ngày sinh", "Chức vụ"])
+                
+                # Lấy dữ liệu từ DB
+                cur.execute("SELECT MaNV, HoTenNV, GioiTinh, NgaySinh, ChucVu FROM NHANVIEN")
+                rows = cur.fetchall()
+                
+                for row in rows:
+                    row_list = list(row)
+                    # Format ngày sinh nếu là datetime/date
+                    if isinstance(row_list[3], (datetime, date)):
+                        row_list[3] = row_list[3].strftime("%Y-%m-%d")  # Hoặc "%d/%m/%Y"
+                    writer.writerow(row_list)
+
+            messagebox.showinfo("Thành công", f"Đã xuất toàn bộ nhân viên ra {file_path}")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi xuất nhân viên: {e}")
+    
     # ===== Frame nút =====
     frame_btn = Frame(frmNhanVien, bg="#E6F2FA")
     frame_btn.pack(anchor="center", pady=5)
@@ -222,6 +258,9 @@ def open_form_NhanVien(vaitro):
     btn_Thoat.pack(side=LEFT, padx=5)
     btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
     btn_Refresh.pack(side=LEFT, padx=5)
+    btn_Xuat = Button(frame_btn, text="Xuất TT Nhân viên", width=15, bg="#00AEEF", fg="white", command=xuat_nhanvien)
+    btn_Xuat.pack(side=LEFT, padx=5)
+
 
     # ===== Phân quyền =====
     if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
@@ -231,6 +270,7 @@ def open_form_NhanVien(vaitro):
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
         btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_Xuat.config(state=DISABLED, bg="gray")
 
     load_data()
     frmNhanVien.mainloop()
