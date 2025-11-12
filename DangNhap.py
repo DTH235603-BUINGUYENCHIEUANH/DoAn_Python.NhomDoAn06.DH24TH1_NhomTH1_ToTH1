@@ -5,6 +5,13 @@ from QLKS import conn, cur, connect_db
 from TrangChu import open_trang_chu
 import mysql.connector
 
+# ====== Hàm canh giữa cửa sổ ======
+def center_window(win, w=400, h=400):
+    ws = win.winfo_screenwidth()
+    hs = win.winfo_screenheight()
+    x = (ws // 2) - (w // 2)
+    y = (hs // 2) - (h // 2)
+    win.geometry(f'{w}x{h}+{x}+{y}')   
 
 def DangNhap():  # xử lý btn Đăng Nhập
     ten = TenDangNhap_entry.get()
@@ -48,7 +55,8 @@ def DangNhap():  # xử lý btn Đăng Nhập
 # Tạo giao diện chính
 frmDangNhap = Tk()
 frmDangNhap.title("Đăng Nhập Hệ Thống Quản Lý Khách Sạn")
-frmDangNhap.geometry("400x400")
+frmDangNhap.minsize(width=400, height=400)
+center_window(frmDangNhap)
 frmDangNhap.configure(bg="#E6F2FA")
 
 # lab_ Đăng Nhập

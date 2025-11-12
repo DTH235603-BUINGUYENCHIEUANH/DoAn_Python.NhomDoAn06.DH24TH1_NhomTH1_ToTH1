@@ -3,10 +3,11 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from Menu import create_menu
 
-def open_form_dichvu(vaitro):
+def open_form_DichVu(vaitro):
     # ====== Hàm canh giữa cửa sổ ======
-    def center_window(win, w=700, h=500):
+    def center_window(win, w=800, h=600):
         ws = win.winfo_screenwidth()
         hs = win.winfo_screenheight()
         x = (ws // 2) - (w // 2)
@@ -16,39 +17,60 @@ def open_form_dichvu(vaitro):
     # ===== Cửa sổ chính =====
     dichvu = Tk()
     dichvu.title("Dịch vụ - Quản lý khách sạn")
+    dichvu.minsize(width=800, height=600)
     center_window(dichvu)
     dichvu.configure(bg="#E6F2FA")
 
+    # ===== Hiển thị menu =====
+    create_menu(dichvu, "DichVu", vaitro)
+
     # ==== Title ====
     frame_Title = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Title, text="HỆ THỐNG DỊCH VỤ KHÁCH SẠN TOM AND JERRY", 
-          font=("Time news roman",20, "bold"), fg="#2F4156", bg="#E6F2FA").pack()
-    frame_Title.pack(pady=10, padx=10, fill="x")
+    Label(frame_Title, text="HỆ THỐNG DỊCH VỤ KHÁCH SẠN TOM AND JERRY", font=("Times New Roman",20, "bold"), fg="#2F4156", bg="#E6F2FA").pack()
+    frame_Title.pack(pady=10, padx=10)
+    
 
     # ==== Frame nhập thông tin ==== 
     frame_Info = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Info, text="Mã dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2)
+    frame_Info.pack(pady=5, padx=10)
+
+    Label(frame_Info, text="Mã dịch vụ: ", font=("Times New Roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2)
     entry_Madv = Entry(frame_Info, width=10)
     entry_Madv.grid(row=0, column=3)
 
-    Label(frame_Info, text="Tên dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0)
+    Label(frame_Info, text="Tên dịch vụ: ", font=("Times New Roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0)
     entry_Tendv = Entry(frame_Info, width=10)
     entry_Tendv.grid(row=0, column=1)
-    '''cb_Tendv = ttk.Combobox(frame_Info, width=20, state="readonly")   # <== thay Entry bằng Combobox
-    cb_Tendv.grid(row=0, column=1)'''
 
-    Label(frame_Info, text="Giá dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=4)
+    Label(frame_Info, text="Giá dịch vụ: ", font=("Times New Roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=4)
     entry_GiaDV = Entry(frame_Info, width=10)
     entry_GiaDV.grid(row=0, column=5)
-    frame_Info.pack(pady=5, padx=10, fill="x")
+    
+    for i in range(6):  # 6 cột: 0-1, 2-3, 4-5
+        frame_Info.columnconfigure(i, weight=1, uniform="col")
 
     # ====== Bảng danh sách dịch vụ ======
-    frame_Table = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Table, text="Danh sách dịch vụ", font=("Time new roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
-    frame_Table.pack()
-    
+    Label(dichvu, text="Danh sách dịch vụ", font=("Times New Roman", 14, "bold"),
+          fg="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
+
+    # ====== Frame chứa bảng và thanh cuộn ======
+    frame_Table = Frame(dichvu, bg="#E6F2FA", bd=2, relief="groove")
+    frame_Table.pack(padx=10, pady=5, anchor="center")
+
+    # ====== Cột ======
     columns = ("MãDV", "TênDV", "GiaDV")
-    tree = ttk.Treeview(frame_Table, columns=columns, show="headings", height=10)
+    tree = ttk.Treeview(frame_Table, columns=columns, show="headings", height=8)
+
+    # ====== Thanh cuộn ======
+    scroll_y = Scrollbar(frame_Table, orient="vertical", command=tree.yview)
+    scroll_x = Scrollbar(frame_Table, orient="horizontal", command=tree.xview)
+    tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+    # ====== Đặt vị trí ======
+    scroll_y.pack(side="right", fill="y")
+    scroll_x.pack(side="bottom", fill="x")
+    tree.pack(side="left")
+
     for col in columns:
         tree.heading(col, text=col)
     tree.column("MãDV", width=100, anchor="center")
@@ -56,28 +78,8 @@ def open_form_dichvu(vaitro):
     tree.column("GiaDV", width=100)
     tree.pack(padx=10, pady=5, fill="both")
 
+
     # ===== Hàm xử lý =====
-    # ====== Hàm nạp dữ liệu cho Combobox Tên dịch vụ ======
-    '''def load_dichvu_to_combobox():
-        cur.execute("SELECT MaDV, TenDV, GiaDV FROM DICHVU")
-        dichvu_data = cur.fetchall()
-        ten_dichvu_list = [row[1] for row in dichvu_data]
-        cb_Tendv["values"] = ten_dichvu_list
-
-        # Lưu lại dict để dễ truy xuất ngược theo tên dịch vụ
-        cb_Tendv.dichvu_dict = {row[1]: (row[0], row[2]) for row in dichvu_data}
-
-    # ====== Khi chọn tên dịch vụ trong combobox ======
-    def on_select_dichvu(event):
-        ten_dv = cb_Tendv.get()
-        if ten_dv in cb_Tendv.dichvu_dict:
-            madv, giadv = cb_Tendv.dichvu_dict[ten_dv]
-            entry_Madv.delete(0, END)
-            entry_Madv.insert(0, madv)
-            entry_GiaDV.delete(0, END)
-            entry_GiaDV.insert(0, giadv)
-
-    cb_Tendv.bind("<<ComboboxSelected>>", on_select_dichvu)'''
 
     def clear_input():
         entry_Madv.delete(0, END)
@@ -112,7 +114,6 @@ def open_form_dichvu(vaitro):
             conn.commit()
             load_data() 
             clear_input()
-            #load_dichvu_to_combobox() #Cập nhật dịch vụ mới cho combobox dịch vụ
             messagebox.showinfo("Thành công", "Đã thêm dịch vụ mới.")
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi thêm: {e}")
@@ -162,7 +163,6 @@ def open_form_dichvu(vaitro):
             conn.commit()
             load_data()
             clear_input()
-            #load_dichvu_to_combobox() 
             messagebox.showinfo("Thành công", "Cập nhật thông tin thành công.")
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi lưu: {e}")
@@ -197,5 +197,4 @@ def open_form_dichvu(vaitro):
         btn_Refresh.config(state=DISABLED, bg="gray")
 
     load_data()
-    #load_dichvu_to_combobox()
     dichvu.mainloop()

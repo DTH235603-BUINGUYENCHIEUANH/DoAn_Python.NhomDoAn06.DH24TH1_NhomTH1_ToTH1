@@ -3,13 +3,13 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur
-from DatPhong import open_form_datphong
-from DatDichVu import open_form_datdichvu
-from DichVu import open_form_dichvu
-from Phong import open_form_phong
-from ThanhToan import open_form_thanhtoan
-from DanhSachKH import open_form_khachhang
-from NhanVien import open_form_nhanvien
+from DatPhong import open_form_DatPhong
+from DatDichVu import open_form_DatDichVu
+from DichVu import open_form_DichVu
+from Phong import open_form_Phong
+from ThanhToan import open_form_ThanhToan
+from DanhSachKH import open_form_DanhSachKH
+from NhanVien import open_form_NhanVien
 
 def open_trang_chu(vaitro):
     # ====== Hàm canh giữa cửa sổ ======
@@ -23,6 +23,7 @@ def open_trang_chu(vaitro):
     trangchu = Tk()
     trangchu.title("Trang chủ - Quản lý khách sạn")
     trangchu.minsize(width=800, height=400)
+    center_window(trangchu)
     trangchu.configure(bg="#E6F2FA")
 
     # ===== Khung tổng chứa ảnh + thông tin =====
@@ -58,23 +59,23 @@ def open_trang_chu(vaitro):
     frame_row1 = Frame(frame_Button, bg="#E6F2FA")
     frame_row1.pack(pady=5)
 
-    Button(frame_row1, text="Dịch vụ", font=("Times New Roman", 14), width=8,bg="#00AEEF", fg="white", command=lambda:open_form_dichvu(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row1, text="Dịch vụ", font=("Times New Roman", 14), width=8,bg="#00AEEF", fg="white", command=lambda:open_form_DichVu(vaitro)).pack(side=LEFT, padx=10)
 
-    Button(frame_row1, text="Phòng", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=lambda:open_form_phong(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row1, text="Phòng", font=("Times New Roman", 14), width=8, bg="#00AEEF", fg="white", command=lambda:open_form_Phong(vaitro)).pack(side=LEFT, padx=10)
 
-    Button(frame_row1, text="Đặt phòng", font=("Times New Roman", 14), width=10, bg="#00AEEF", fg="white", command=lambda:open_form_datphong(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row1, text="Đặt phòng", font=("Times New Roman", 14), width=10, bg="#00AEEF", fg="white", command=lambda:open_form_DatPhong(vaitro)).pack(side=LEFT, padx=10)
 
-    Button(frame_row1, text="Đặt dịch vụ", font=("Times New Roman", 14), width=10, bg="#00AEEF", fg="white", command=lambda:open_form_datdichvu(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row1, text="Đặt dịch vụ", font=("Times New Roman", 14), width=10, bg="#00AEEF", fg="white", command=lambda:open_form_DatDichVu(vaitro)).pack(side=LEFT, padx=10)
 
-    Button(frame_row1, text="Thanh toán", font=("Times New Roman", 14), width=10, bg="#00AEEF", fg="white", command=lambda:open_form_thanhtoan(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row1, text="Thanh toán", font=("Times New Roman", 14), width=10, bg="#00AEEF", fg="white", command=lambda:open_form_ThanhToan(vaitro)).pack(side=LEFT, padx=10)
 
 
     # ===== Hàng 2: Hai nút dài =====
     frame_row2 = Frame(frame_Button, bg="#E6F2FA")
     frame_row2.pack(pady=10)
 
-    Button(frame_row2, text="Danh sách khách hàng", font=("Times New Roman", 14), width=22, bg="#00AEEF", fg="white", command=lambda:open_form_khachhang(vaitro)).pack(side=LEFT, padx=10)
-    Button(frame_row2, text="Danh sách nhân viên", font=("Times New Roman", 14), width=22, bg="#00AEEF", fg="white", command=lambda: open_form_nhanvien(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row2, text="Danh sách khách hàng", font=("Times New Roman", 14), width=22, bg="#00AEEF", fg="white", command=lambda:open_form_DanhSachKH(vaitro)).pack(side=LEFT, padx=10)
+    Button(frame_row2, text="Danh sách nhân viên", font=("Times New Roman", 14), width=22, bg="#00AEEF", fg="white", command=lambda: open_form_NhanVien(vaitro)).pack(side=LEFT, padx=10)
 
     trangchu.mainloop()
 

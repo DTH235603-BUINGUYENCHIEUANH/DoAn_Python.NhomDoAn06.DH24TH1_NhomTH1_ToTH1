@@ -2,13 +2,26 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from QLKS import conn, cur
+from Menu import create_menu
 
-def open_form_datphong(vaitro):
+# ====== Hàm canh giữa cửa sổ ======
+def center_window(win, w=800, h=600):
+    ws = win.winfo_screenwidth()
+    hs = win.winfo_screenheight()
+    x = (ws // 2) - (w // 2)
+    y = (hs // 2) - (h // 2)
+    win.geometry(f'{w}x{h}+{x}+{y}')
+
+def open_form_DatPhong(vaitro):
     frmDatPhong = Tk()
     frmDatPhong.title("Quản lý đặt phòng")
-    frmDatPhong.minsize(width=1200, height=800)
+    frmDatPhong.minsize(width=800, height=600)
+    center_window(frmDatPhong)
     frmDatPhong.configure(bg="#E6F2FA")
     frmDatPhong.resizable(False, False)
+
+    # ===== Hiển thị menu =====
+    create_menu(frmDatPhong, "DatPhong", vaitro)
 
     Label(frmDatPhong, text="QUẢN LÝ ĐẶT PHÒNG", font=("Times New Roman", 18, "bold"), bg="#E6F2FA").pack(pady=10)
 
@@ -16,61 +29,72 @@ def open_form_datphong(vaitro):
     frame_info = Frame(frmDatPhong, bg="#E6F2FA")
     frame_info.pack(anchor="center", pady=10)
 
-    Label(frame_info, text="Mã đặt phòng", foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
-    entry_madp = Entry(frame_info, width=15)
-    entry_madp.grid(row=0, column=1, padx=5, pady=5)
+    # Hàng 0
+    Label(frame_info, text="Mã đặt phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+    entry_madp = Entry(frame_info, width=12)
+    entry_madp.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Mã khách hàng", foreground="#2F4156",bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
-    entry_makh = Entry(frame_info, width=15)
-    entry_makh.grid(row=0, column=3, padx=5, pady=5)
+    Label(frame_info, text="Mã khách hàng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+    entry_makh = Entry(frame_info, width=12)
+    entry_makh.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Tên phòng", foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
-    cb_tenphong = ttk.Combobox(frame_info, width=20, state="readonly")
-    cb_tenphong.grid(row=1, column=1, padx=5, pady=5)
+    Label(frame_info, text="Tên phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=4, padx=5, pady=5, sticky="e")
+    cb_tenphong = ttk.Combobox(frame_info, width=15, state="readonly")
+    cb_tenphong.grid(row=0, column=5, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Mã phòng", foreground="#2F4156",bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
-    entry_maphong = Entry(frame_info, width=15)
-    entry_maphong.grid(row=1, column=3, padx=5, pady=5)
+    # Hàng 1
+    Label(frame_info, text="Mã phòng", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+    entry_maphong = Entry(frame_info, width=12)
+    entry_maphong.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Ngày đặt", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
-    date_ngaydat = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
-    date_ngaydat.grid(row=2, column=1, padx=5, pady=5)
+    Label(frame_info, text="Ngày đặt", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+    date_ngaydat = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=10)
+    date_ngaydat.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Ngày trả", foreground="#2F4156",bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
-    date_ngaytra = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
-    date_ngaytra.grid(row=2, column=3, padx=5, pady=5)
+    Label(frame_info, text="Ngày trả", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=4, padx=5, pady=5, sticky="e")
+    date_ngaytra = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=10)
+    date_ngaytra.grid(row=1, column=5, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Số ngày ở", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
+    # Hàng 2
+    Label(frame_info, text="Số ngày ở", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="e")
     entry_songayo = Entry(frame_info, width=12)
-    entry_songayo.grid(row=3, column=1, padx=5, pady=5)
+    entry_songayo.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Số lượng khách", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Số lượng khách", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="e")
     entry_soluong = Entry(frame_info, width=12)
-    entry_soluong.grid(row=3, column=3, padx=5, pady=5)
+    entry_soluong.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Mã khách hàng khác", foreground="#2F4156",bg="#E6F2FA").grid(row=3, column=4, padx=5, pady=5, sticky="w")
-    entry_makhkhac = Entry(frame_info, width=15)
-    entry_makhkhac.grid(row=3, column=5, padx=5, pady=5)
+    Label(frame_info, text="Mã KH khác", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=4, padx=5, pady=5, sticky="e")
+    entry_makhkhac = Entry(frame_info, width=12)
+    entry_makhkhac.grid(row=2, column=5, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Thành tiền", foreground="#2F4156",bg="#E6F2FA").grid(row=4, column=0, padx=5, pady=5, sticky="w")
-    entry_thanhtien = Entry(frame_info, width=15)
-    entry_thanhtien.grid(row=4, column=1, padx=5, pady=5)
+    # Hàng 3
+    Label(frame_info, text="Thành tiền", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="e")
+    entry_thanhtien = Entry(frame_info, width=12)
+    entry_thanhtien.grid(row=3, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Ghi chú", foreground="#2F4156",bg="#E6F2FA").grid(row=4, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ghi chú", font=("Times New Roman", 14, "bold"),
+          foreground="#2F4156", bg="#E6F2FA").grid(row=3, column=2, padx=5, pady=5, sticky="e")
     entry_ghichu = Entry(frame_info, width=40)
-    entry_ghichu.grid(row=4, column=3, columnspan=3, padx=5, pady=5, sticky="w")
+    entry_ghichu.grid(row=3, column=3, columnspan=3, padx=5, pady=5, sticky="w")
 
-    # Căn đều các cột trong frame_info
-    for i in range(6):  # vì cậu dùng 6 cột (0 -> 5)
+    # ===== Căn cột đều nhau =====
+    for i in range(6):
         frame_info.grid_columnconfigure(i, weight=1, uniform="col")
-
 
     # ===== Chức năng tìm kiếm ===== (Pack trước Treeview để tránh bị che)
     frame_TimKiem = Frame(frmDatPhong, bg="#E6F2FA")  
-    frame_TimKiem.pack(anchor="center", pady=20)
+    frame_TimKiem.pack(anchor="center", pady=5)
 
     # Tiêu đề căn giữa toàn dòng
-    Label(frame_TimKiem, text="Tìm kiếm theo mã khách hàng", font=("Times New Roman", 20, "bold"), bg="#E6F2FA").grid(row=0, column=0, columnspan=3, pady=(0, 15))
+    Label(frame_TimKiem, text="Tìm kiếm theo mã khách hàng", font=("Times New Roman", 14, "bold"), bg="#E6F2FA").grid(row=0, column=0, columnspan=3, pady=(0, 15))
 
     # Nhãn + Entry + Nút
     Label(frame_TimKiem, text="Nhập mã KH", font=("Times New Roman", 11, "bold"), bg="#E6F2FA").grid(row=1, column=0, padx=10, pady=5, sticky="e")
@@ -84,8 +108,23 @@ def open_form_datphong(vaitro):
     frame_TimKiem.grid_columnconfigure(2, weight=1, uniform="col")
 
     # ===== Treeview ===== (Pack sau frame_TimKiem)
+    # ===== Frame chứa bảng =====
+    frame_table = Frame(frmDatPhong, bg="#E6F2FA", bd=2, relief="groove")
+    frame_table.pack(pady=5, expand=True)
+
     columns = ("MaDatPhong","MaKHDatPhong","MaPhong","NgayDat","NgayTra","SoNgayO","SoLuongKhach","MaKHKhac","ThanhTien","GhiChu")
-    tree = ttk.Treeview(frmDatPhong, columns=columns, show="headings", height=12)
+    tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=5)
+
+    # ====== Thanh cuộn ======
+    scroll_y = Scrollbar(frame_table, orient="vertical", command=tree.yview, bg="#E6F2FA")
+    scroll_x = Scrollbar(frame_table, orient="horizontal", command=tree.xview, bg="#E6F2FA")
+    tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+    # ====== Đặt vị trí ======
+    scroll_y.pack(side="right", fill="y")
+    scroll_x.pack(side="bottom", fill="x")
+    tree.pack(side="left", fill="both", expand=True)
+
     for col in columns:
         tree.heading(col, text=col)
         tree.column(col, width=100, anchor="center")
@@ -331,7 +370,7 @@ def open_form_datphong(vaitro):
     # ===== Nút =====
     # ===== Frame nút =====
     frame_btn = Frame(frmDatPhong, bg="#E6F2FA")
-    frame_btn.pack(anchor="center", pady=20)
+    frame_btn.pack(anchor="center", pady=5)
 
     btn_Them = Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_datphong)
     btn_Them.pack(side=LEFT, padx=5)

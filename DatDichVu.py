@@ -3,10 +3,11 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from Menu import create_menu
 
-def open_form_datdichvu(vaitro):
+def open_form_DatDichVu(vaitro):
     # ====== Hàm canh giữa cửa sổ ======
-    def center_window(win, w=700, h=500):
+    def center_window(win, w=900, h=700):
         ws = win.winfo_screenwidth()
         hs = win.winfo_screenheight()
         x = (ws // 2) - (w // 2)
@@ -16,9 +17,13 @@ def open_form_datdichvu(vaitro):
     # ====== Cửa sổ chính ======
     frmDatDV = Tk()
     frmDatDV.title("Đặt Dịch vụ khách sạn")
-    frmDatDV.minsize(width=900, height=500)
+    frmDatDV.minsize(width=900, height=700)
+    center_window(frmDatDV)
     frmDatDV.configure(bg="#E6F2FA")
     frmDatDV.resizable(False, False)
+
+    # ===== Hiển thị menu =====
+    create_menu(frmDatDV, "DatDichVu", vaitro)
 
     # ====== Tiêu đề ======
     Label(frmDatDV, text="QUẢN LÝ ĐẶT DỊCH VỤ KHÁCH SẠN", font=("Times New Roman", 18, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=10)
@@ -58,16 +63,16 @@ def open_form_datdichvu(vaitro):
 
     # ===== Chức năng tìm kiếm ===== 
     frame_TimKiem = Frame(frmDatDV, bg="#E6F2FA")  
-    frame_TimKiem.pack(anchor="center", pady=20)
+    frame_TimKiem.pack(anchor="center", pady=5)
 
     # Tiêu đề căn giữa toàn dòng
     Label(frame_TimKiem, text="Tìm kiếm theo mã khách hàng", font=("Times New Roman", 16, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, columnspan=3, pady=(0, 15))
 
     # Nhãn + Entry + Nút
-    Label(frame_TimKiem, text="Nhập mã KH", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    Label(frame_TimKiem, text="Nhập mã KH", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, pady=5, sticky="e")
 
     entry_nhapthongtin_timkiem = Entry(frame_TimKiem, width=20)
-    entry_nhapthongtin_timkiem.grid(row=1, column=1, padx=10, pady=5)
+    entry_nhapthongtin_timkiem.grid(row=1, column=1, pady=5)
 
     # Chia đều độ rộng các cột trong frame_TimKiem để mọi thứ căn giữa
     frame_TimKiem.grid_columnconfigure(0, weight=1, uniform="col")
@@ -75,12 +80,22 @@ def open_form_datdichvu(vaitro):
     frame_TimKiem.grid_columnconfigure(2, weight=1, uniform="col")
 
     
-    # ====== Bảng danh sách phòng ======
-    Label(frmDatDV, text="Danh sách đặt DV", font=("Times New Roman", 10, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
+    # ====== Bảng danh sách DV ======
+    frame_table = Frame(frmDatDV, bg="#E6F2FA", bd=2, relief="groove")
+    frame_table.pack(pady=5, expand=True)
 
     columns = ("Mã đặt DV", "Mã KH đặt DV", "Mã DV", "Số Lượng DV", "Thành tiền")
-    tree = ttk.Treeview(frmDatDV, columns=columns, show="headings", height=10)
+    tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=10)
 
+    # ====== Thanh cuộn ======
+    scroll_y = Scrollbar(frame_table, orient="vertical", command=tree.yview, bg="#E6F2FA")
+    scroll_x = Scrollbar(frame_table, orient="horizontal", command=tree.xview, bg="#E6F2FA")
+    tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+    # ====== Đặt vị trí ======
+    scroll_y.pack(side="right", fill="y")
+    scroll_x.pack(side="bottom", fill="x")
+    tree.pack(side="left", fill="both", expand=True)
     for col in columns:
         tree.heading(col, text=col)
         tree.column(col, anchor="center")
@@ -288,7 +303,7 @@ def open_form_datdichvu(vaitro):
     Button(frame_TimKiem, text="Tìm kiếm", width=8, bg="#00AEEF", fg="white", command=timkiemtheo_MaKHDatDV).grid(row=2, column=0, columnspan=3, padx=5)
     # ====== Frame nút ======
     frame_btn = Frame(frmDatDV, bg="#E6F2FA")
-    frame_btn.pack(anchor="center", pady=20)
+    frame_btn.pack(anchor="center", pady=5)
 
     btn_Them = Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_datdichvu)
     btn_Them.pack(side=LEFT, padx=5)

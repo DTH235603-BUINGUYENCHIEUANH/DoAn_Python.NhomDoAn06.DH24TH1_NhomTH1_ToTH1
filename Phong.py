@@ -3,11 +3,11 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from Menu import create_menu
 
-
-def open_form_phong(vaitro):
+def open_form_Phong(vaitro):
         # ====== Hàm canh giữa cửa sổ ======
-        def center_window(win, w=700, h=500):
+        def center_window(win, w=900, h=600):
             ws = win.winfo_screenwidth()
             hs = win.winfo_screenheight()
             x = (ws // 2) - (w // 2)
@@ -17,42 +17,60 @@ def open_form_phong(vaitro):
         # ====== Cửa sổ chính ======
         frmPhong = Tk()
         frmPhong.title("Phòng khách sạn")
-        center_window(frmPhong, 700, 500)
+        frmPhong.minsize(width=900, height=600)
+        center_window(frmPhong)
         frmPhong.configure(bg="#E6F2FA")
         frmPhong.resizable(False, False)
-
+        # ===== Hiển thị menu =====
+        create_menu(frmPhong, "Phong", vaitro)
+    
         # ====== Tiêu đề ======
         Label(frmPhong, text="QUẢN LÝ PHÒNG KHÁCH SẠN", font=("Times New Roman", 18, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=10)
 
         # ====== Frame nhập thông tin ====== 
         frame_info = Frame(frmPhong, bg="#E6F2FA")
-        frame_info.pack(pady=5, padx=10, fill="x")
+        frame_info.pack(pady=5, padx=10)
 
-        Label(frame_info, text="Mã phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Mã phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="e")
         entry_maphong = Entry(frame_info, width=15)
-        entry_maphong.grid(row=0, column=1, padx=5, pady=5)
+        entry_maphong.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        Label(frame_info, text="Tên phòng",font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Tên phòng",font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="e")
         entry_tenphong = Entry(frame_info, width=15)
-        entry_tenphong.grid(row=0, column=3, padx=5, pady=5)
+        entry_tenphong.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-        Label(frame_info, text="Loại phòng",font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Loại phòng",font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="e")
         entry_loaiphong = Entry(frame_info, width=15)
-        entry_loaiphong.grid(row=1, column=1, padx=5, pady=5)
+        entry_loaiphong.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-        Label(frame_info, text="Giá phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Giá phòng", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="e")
         entry_giaphong = Entry(frame_info, width=15)
-        entry_giaphong.grid(row=1, column=3, padx=5, pady=5)
+        entry_giaphong.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-        Label(frame_info, text="Trạng thái", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        Label(frame_info, text="Trạng thái", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=0, padx=5, pady=5, sticky="e")
         entry_trangthai = Entry(frame_info, width=15)
-        entry_trangthai.grid(row=2, column=1, padx=5, pady=5)
+        entry_trangthai.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-        # ====== Bảng danh sách phòng ======
-        Label(frmPhong, text="Danh ságch phòng", font=("Times New Roman", 10, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
+        # Thiết lập grid đều nhau
+        for i in range(4):  # giả sử có 4 cột
+            frame_info.columnconfigure(i, weight=1, uniform="col")  # uniform giúp các cột đều nhau
+
+        # Tạo frame chứa bảng và thanh cuộn
+        frame_table = Frame(frmPhong, bg="#E6F2FA", bd=2, relief="groove")
+        frame_table.pack(pady=5, expand=True)
 
         columns = ("Mã phòng", "Tên phòng", "Loại phòng", "Giá phòng", "Trạng thái")
-        tree = ttk.Treeview(frmPhong, columns=columns, show="headings", height=10)
+        tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=10)
+
+        # ====== Thanh cuộn ======
+        scroll_y = Scrollbar(frame_table, orient="vertical", command=tree.yview, bg="#E6F2FA")
+        scroll_x = Scrollbar(frame_table, orient="horizontal", command=tree.xview, bg="#E6F2FA")
+        tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+        # ====== Đặt vị trí ======
+        scroll_y.pack(side="right", fill="y")
+        scroll_x.pack(side="bottom", fill="x")
+        tree.pack(side="left", fill="both", expand=True)
 
         for col in columns:
             tree.heading(col, text=col)

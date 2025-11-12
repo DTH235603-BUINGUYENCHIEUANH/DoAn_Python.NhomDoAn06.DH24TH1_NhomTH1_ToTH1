@@ -3,11 +3,12 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from Menu import create_menu
 
-def open_form_nhanvien(vaitro):
+def open_form_NhanVien(vaitro):
 
     # ====== Hàm canh giữa cửa sổ ======
-    def center_window(win, w=700, h=500):
+    def center_window(win, w=800, h=600):
         ws = win.winfo_screenwidth()
         hs = win.winfo_screenheight()
         x = (ws // 2) - (w // 2)
@@ -17,38 +18,45 @@ def open_form_nhanvien(vaitro):
     # ====== Cửa sổ chính ======
     frmNhanVien = Tk()
     frmNhanVien.title("Quản lý nhân viên khách sạn Tom & Jerry")
-    frmNhanVien.minsize(width=1000, height=400)
+    frmNhanVien.minsize(width=800, height=600)
+    center_window(frmNhanVien)
     frmNhanVien.configure(bg="#E6F2FA")
     frmNhanVien.resizable(False, False)
 
+    # ===== Hiển thị menu =====
+    create_menu(frmNhanVien, "NhanVien", vaitro)
     # ====== Tiêu đề ======
-    lbl_title = Label(frmNhanVien, text="QUẢN LÝ NHÂN VIÊN KHÁCH SẠN TOM & JERRY", font=("Times New Roman", 18, "bold"), bg="#E6F2FA")
-    lbl_title.pack(pady=10)
+    lbl_title = Label(frmNhanVien, text="QUẢN LÝ NHÂN VIÊN KHÁCH SẠN TOM & JERRY", foreground="#2F4156", font=("Times New Roman", 18, "bold"), bg="#E6F2FA")
+    lbl_title.pack(pady=5)
 
     
     # ====== Frame nhập thông tin ======
     frame_info = Frame(frmNhanVien, bg="#E6F2FA")
-    frame_info.pack(pady=5, padx=10, fill="x")
+    frame_info.pack(pady=5, padx=5)
 
-    Label(frame_info, text="Mã nhân viên", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã nhân viên", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="e")
     entry_manv = Entry(frame_info, width=15)
     entry_manv.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Họ tên NV", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Họ tên NV", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="e")
     entry_hoten = Entry(frame_info, width=25)
     entry_hoten.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Giới tính", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Giới tính", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="e")
     entry_gioitinh = Entry(frame_info, width=15)
     entry_gioitinh.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Ngày sinh", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Ngày sinh", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="e")
     date_ngaysinh = DateEntry(frame_info, date_pattern="yyyy-mm-dd", width=12)
     date_ngaysinh.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Chức vụ", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Chức vụ", font=("Times New Roman", 14), fg="#2F4156", bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="e")
     entry_chucvu = Entry(frame_info, width=15)
     entry_chucvu.grid(row=2, column=3, padx=5, pady=5, sticky="w")
+
+    # Thiết lập grid đều nhau
+    for i in range(4):  # giả sử có 4 cột
+        frame_info.columnconfigure(i, weight=1, uniform="col")  # uniform giúp các cột đều nhau
 
     # Load
     def load_data():
@@ -61,13 +69,26 @@ def open_form_nhanvien(vaitro):
             tree.insert("", END, values=row)
     
     # ====== Bảng danh sách nhân viên ====== 
+    # Tạo frame chứa bảng và thanh cuộn
+    frame_table = Frame(frmNhanVien, bg="#E6F2FA", bd=2, relief="groove")
+    frame_table.pack(pady=5, expand=True)
+    frame_table.configure(background="#E6F2FA")
+
     # ===== Treeview ===== (Pack sau frame_TimKiem)
-    columns = ("MaNV", "HoTenNV", "GioiTinh", "NgaySinh", "ChucVu")
-    tree = ttk.Treeview(frmNhanVien, columns=columns, show="headings", height=12)
+    columns = ("Mã nhân viên", "Họ tên NV", "Giới tính", "Ngày sinh", "Chức vụ")
+    tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=8)
+
+    # ====== Thanh cuộn ======
+    scroll_y = Scrollbar(frame_table, orient="vertical", command=tree.yview, bg="#E6F2FA")
+    tree.configure(yscrollcommand=scroll_y.set)
+
+    # ====== Đặt vị trí ======
+    scroll_y.pack(side="right", fill="y")
+    tree.pack(side="left", expand=True)
     for col in columns:
         tree.heading(col, text=col)
         tree.column(col, width=100, anchor="center")
-    tree.pack(padx=10, pady=10, fill="x")
+    tree.pack(padx=5, pady=10, fill="x")
 
     # ====== Chức năng ======
     # ===== Hàm xử lý =====
@@ -186,7 +207,7 @@ def open_form_nhanvien(vaitro):
     
     # ===== Frame nút =====
     frame_btn = Frame(frmNhanVien, bg="#E6F2FA")
-    frame_btn.pack(anchor="center", pady=20)
+    frame_btn.pack(anchor="center", pady=5)
 
     btn_Them = Button(frame_btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_nhanvien)
     btn_Them.pack(side=LEFT, padx=5)

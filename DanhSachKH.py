@@ -3,11 +3,12 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from Menu import create_menu
 
-def open_form_khachhang(vaitro):
+def open_form_DanhSachKH(vaitro):
 
     # ====== Hàm canh giữa cửa sổ ======
-    def center_window(win, w=700, h=500):
+    def center_window(win, w=800, h=600):
         ws = win.winfo_screenwidth()
         hs = win.winfo_screenheight()
         x = (ws // 2) - (w // 2)
@@ -17,39 +18,43 @@ def open_form_khachhang(vaitro):
     # ====== Cửa sổ chính ======
     frmKhachHang = Tk()
     frmKhachHang.title("Quản lý khách hàng")
-    center_window(frmKhachHang, 700, 500)
+    frmKhachHang.minsize(width=800, height=600)
+    center_window(frmKhachHang)
     frmKhachHang.configure(bg="#E6F2FA")
     frmKhachHang.resizable(False, False)
 
+    # ===== Hiển thị menu =====
+    create_menu(frmKhachHang, "DanhSachKH", vaitro)
+
     # ====== Tiêu đề ======
-    lbl_title = Label(frmKhachHang, text="QUẢN LÝ KHÁCH HÀNG", font=("Times New Roman", 18, "bold"), bg="#E6F2FA")
+    lbl_title = Label(frmKhachHang, text="QUẢN LÝ KHÁCH HÀNG", foreground="#2F4156", font=("Times New Roman", 18, "bold"), bg="#E6F2FA")
     lbl_title.pack(pady=10)
 
     # ====== Frame nhập thông tin ======
     frame_info = Frame(frmKhachHang, bg="#E6F2FA")
-    frame_info.pack(pady=5, padx=10, fill="x")
+    frame_info.pack(pady=5, padx=10)
 
-    Label(frame_info, text="Mã KH", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Mã KH", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=0, padx=5, pady=5, sticky="w")
     entry_makh = Entry(frame_info, width=15)
     entry_makh.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Họ tên KH", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Họ tên KH", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=0, column=2, padx=5, pady=5, sticky="w")
     entry_hoten = Entry(frame_info, width=25)
     entry_hoten.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Quốc tịch", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Quốc tịch", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=0, padx=5, pady=5, sticky="w")
     entry_quoctich = Entry(frame_info, width=15)
     entry_quoctich.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="SĐT", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="SĐT", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=1, column=2, padx=5, pady=5, sticky="w")
     entry_sdt = Entry(frame_info, width=15)
     entry_sdt.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="CCCD", bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="CCCD", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=2, column=2, padx=5, pady=5, sticky="w")
     entry_cccd = Entry(frame_info, width=15)
     entry_cccd.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 
-    Label(frame_info, text="Email", bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
+    Label(frame_info, text="Email", font=("Times New Roman", 14, "bold"), foreground="#2F4156", bg="#E6F2FA").grid(row=3, column=0, padx=5, pady=5, sticky="w")
     entry_email = Entry(frame_info, width=40)
     entry_email.grid(row=3, column=1, columnspan=3, padx=5, pady=5, sticky="w")
 
@@ -65,25 +70,26 @@ def open_form_khachhang(vaitro):
 
 
     # ====== Bảng danh sách khách hàng ======
-    lbl_ds = Label(frmKhachHang, text="Danh sách khách hàng", font=("Times New Roman", 10, "bold"), bg="#E6F2FA")
-    lbl_ds.pack(pady=5, anchor="w", padx=10)
+    frame_table = Frame(frmKhachHang, bg="#E6F2FA", bd=2, relief="groove")
+    frame_table.pack(pady=5, expand=True)
 
-    columns = ("MaKH", "HoTenKH", "QuocTich", "Sdt", "CCCD", "Email") 
-    tree = ttk.Treeview(frmKhachHang, columns=columns, show="headings", height=10)
-    tree.heading("MaKH", text="Mã KH")
-    tree.heading("HoTenKH", text="Họ tên KH")
-    tree.heading("QuocTich", text="Quốc tịch")
-    tree.heading("Sdt", text="SĐT")
-    tree.heading("CCCD", text="CCCD")
-    tree.heading("Email", text="Email")
+    columns = ("Mã khách hàng", "Họ tên KH", "Quốc tịch", "Số điện thoại", "CCCD", "Email") 
+    tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=10)
 
-    tree.column("MaKH", width=100, anchor="center")
-    tree.column("HoTenKH", width=150)
-    tree.column("QuocTich", width=100, anchor="center")
-    tree.column("Sdt", width=100, anchor="center")
-    tree.column("CCCD", width=100, anchor="center")
-    tree.column("Email", width=200)
-    tree.pack(padx=10, pady=5, fill="both")
+    # ====== Thanh cuộn ======
+    scroll_y = Scrollbar(frame_table, orient="vertical", command=tree.yview, bg="#E6F2FA")
+    scroll_x = Scrollbar(frame_table, orient="horizontal", command=tree.xview, bg="#E6F2FA")
+    tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+    # ====== Đặt vị trí ======
+    scroll_y.pack(side="right", fill="y")
+    scroll_x.pack(side="bottom", fill="x")
+    tree.pack(side="left", fill="both", expand=True)
+
+    for col in columns:
+            tree.heading(col, text=col)
+            tree.column(col, anchor="center")
+    
     load_data()
 
     # ====== Chức năng ======
