@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from ChatBot import open_chatbot, add_chatbot_button 
 from Menu import create_menu
 
 def open_form_Phong(vaitro):
@@ -25,7 +26,9 @@ def open_form_Phong(vaitro):
 
         # ===== Hiển thị menu =====
         create_menu(frmPhong, "Phong", vaitro)
-    
+
+        # ===== Chatbot =====
+        add_chatbot_button(frmPhong, x_offset=-10, y_offset=40)
         # ====== Tiêu đề ======
         Label(frmPhong, text="QUẢN LÝ PHÒNG KHÁCH SẠN", font=("Times New Roman", 18, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=10)
 
@@ -191,8 +194,8 @@ def open_form_Phong(vaitro):
         btn_Huy.grid(row=0, column=4, padx=5)
         btn_Thoat = Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmPhong.quit)
         btn_Thoat.grid(row=0, column=5, padx=5)
-        btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
-        btn_Refresh.grid(row=0, column=6, padx=5)
+        btn_Reset = Button(frame_btn, text="Reset", width=8, bg="#00AEEF", fg="white", command=load_data)
+        btn_Reset.grid(row=0, column=6, padx=5)
 
         # ===== Phân quyền =====
         if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
@@ -201,7 +204,7 @@ def open_form_Phong(vaitro):
             btn_Sua.config(state=DISABLED, bg="gray")
             btn_Luu.config(state=DISABLED, bg="gray")
             btn_Huy.config(state=DISABLED, bg="gray")
-            btn_Refresh.config(state=DISABLED, bg="gray")
+            btn_Reset.config(state=DISABLED, bg="gray")
         # ====== Khởi động ======
 
         load_data()

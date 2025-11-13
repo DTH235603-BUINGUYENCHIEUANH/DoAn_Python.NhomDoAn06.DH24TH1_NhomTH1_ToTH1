@@ -6,6 +6,7 @@ import csv
 from tkinter import filedialog, messagebox
 from datetime import datetime, date
 from QLKS import conn, cur  
+from ChatBot import open_chatbot, add_chatbot_button 
 from Menu import create_menu
 
 def open_form_NhanVien(vaitro):
@@ -27,6 +28,10 @@ def open_form_NhanVien(vaitro):
 
     # ===== Hiển thị menu =====
     create_menu(frmNhanVien, "NhanVien", vaitro)
+
+    # ===== Chatbot =====
+    add_chatbot_button(frmNhanVien, x_offset=-10, y_offset=40)
+    
     # ====== Tiêu đề ======
     lbl_title = Label(frmNhanVien, text="QUẢN LÝ NHÂN VIÊN KHÁCH SẠN TOM & JERRY", foreground="#2F4156", font=("Times New Roman", 18, "bold"), bg="#E6F2FA")
     lbl_title.pack(pady=5)
@@ -256,8 +261,8 @@ def open_form_NhanVien(vaitro):
     btn_Huy.pack(side=LEFT, padx=5)
     btn_Thoat = Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmNhanVien.quit)
     btn_Thoat.pack(side=LEFT, padx=5)
-    btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
-    btn_Refresh.pack(side=LEFT, padx=5)
+    btn_Reset = Button(frame_btn, text="Reset", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Reset.pack(side=LEFT, padx=5)
     btn_Xuat = Button(frame_btn, text="Xuất TT Nhân viên", width=15, bg="#00AEEF", fg="white", command=xuat_nhanvien)
     btn_Xuat.pack(side=LEFT, padx=5)
 
@@ -269,7 +274,7 @@ def open_form_NhanVien(vaitro):
         btn_Sua.config(state=DISABLED, bg="gray")
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
-        btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_Reset.config(state=DISABLED, bg="gray")
         btn_Xuat.config(state=DISABLED, bg="gray")
 
     load_data()

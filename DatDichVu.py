@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from ChatBot import open_chatbot, add_chatbot_button
 from Menu import create_menu
 
 def open_form_DatDichVu(vaitro):
@@ -25,6 +26,9 @@ def open_form_DatDichVu(vaitro):
 
     # ===== Hiển thị menu =====
     create_menu(frmDatDV, "DatDichVu", vaitro)
+
+    # ===== Chatbot =====
+    add_chatbot_button(frmDatDV, x_offset=-10, y_offset=40)
 
     # ====== Tiêu đề ======
     Label(frmDatDV, text="QUẢN LÝ ĐẶT DỊCH VỤ KHÁCH SẠN", font=("Times New Roman", 18, "bold"), foreground="#2F4156", bg="#E6F2FA").pack(pady=10)
@@ -318,8 +322,8 @@ def open_form_DatDichVu(vaitro):
     btn_Huy.pack(side=LEFT, padx=5)
     btn_Thoat = Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmDatDV.quit)
     btn_Thoat.pack(side=LEFT, padx=5)
-    btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
-    btn_Refresh.pack(side=LEFT, padx=5)
+    btn_Reset = Button(frame_btn, text="Reset", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Reset.pack(side=LEFT, padx=5)
 
     # ===== Phân quyền =====
     if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
@@ -328,7 +332,7 @@ def open_form_DatDichVu(vaitro):
         btn_Sua.config(state=DISABLED, bg="gray")
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
-        btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_Reset.config(state=DISABLED, bg="gray")
     # ====== Khởi động ======
     load_data()
     load_dichvu_to_combobox()

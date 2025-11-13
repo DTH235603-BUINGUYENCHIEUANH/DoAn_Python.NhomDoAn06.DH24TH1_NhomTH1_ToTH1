@@ -6,6 +6,7 @@ from datetime import datetime, date
 from tkinter import filedialog
 import csv
 from QLKS import conn, cur
+from ChatBot import open_chatbot, add_chatbot_button
 from Menu import create_menu
 
 def open_form_ThanhToan(vaitro):
@@ -27,9 +28,13 @@ def open_form_ThanhToan(vaitro):
 
     # ===== Hiển thị menu =====
     create_menu(hoadon, "ThanhToan", vaitro)
+
+    # ===== Chatbot =====
+    add_chatbot_button(hoadon, x_offset=-10, y_offset=40)
+
     # ==== Title ====
     frame_Title = Frame(hoadon)
-    Label(frame_Title, text="HỆ THỐNG HOÁ ĐƠN KHÁCH SẠN TOM AND JERRY", font=("Time news roman",20, "bold"), foreground="#2F4156", background="#E6F2FA")
+    Label(frame_Title, text="HỆ THỐNG HOÁ ĐƠN KHÁCH SẠN TOM AND JERRY", font=("Time news roman",20, "bold"), foreground="#2F4156", background="#E6F2FA").pack()
     frame_Title.pack(pady=10, padx=10, fill="x", anchor=CENTER)
     frame_Title.configure(bg="#E6F2FA")
 
@@ -323,8 +328,8 @@ def open_form_ThanhToan(vaitro):
     btn_Huy.grid(row=0, column=4, padx=5)
     btn_Thoat = Button(frame_Btn, text="Thoát", width=8, font=("Time news roman",10), foreground="#2F4156", background="#00AEEF", command=hoadon.quit)
     btn_Thoat.grid(row=0, column=5, padx=5)
-    btn_Refresh = Button(frame_Btn, text="Refresh", width=8, background="#00AEEF", foreground="#2F4156", command=load_data)
-    btn_Refresh.grid(row=0, column=6, padx=5)
+    btn_Reset = Button(frame_Btn, text="Reset", width=8, background="#00AEEF", foreground="#2F4156", command=load_data)
+    btn_Reset.grid(row=0, column=6, padx=5)
     btn_XuatChiTiet = Button(frame_Btn, text="Xuất HD Chi tiết", width=15, font=("Time news roman",10), foreground="#2F4156", background="#00AEEF", command=xuat_hoadon_chitiet)
     btn_XuatChiTiet.grid(row=0, column=7, padx=5)
 
@@ -335,7 +340,7 @@ def open_form_ThanhToan(vaitro):
         btn_Sua.config(state=DISABLED, bg="gray")
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
-        btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_Reset.config(state=DISABLED, bg="gray")
         btn_XuatChiTiet.config(state=DISABLED, bg="gray")
 
     load_data()

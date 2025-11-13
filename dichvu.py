@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from ChatBot import open_chatbot, add_chatbot_button
 from Menu import create_menu
 
 def open_form_DichVu(vaitro):
@@ -25,6 +26,8 @@ def open_form_DichVu(vaitro):
     # ===== Hiển thị menu =====
     create_menu(dichvu, "DichVu", vaitro)
 
+    # ===== Chatbot =====
+    add_chatbot_button(dichvu, x_offset=-10, y_offset=40)
     # ==== Title ====
     frame_Title = Frame(dichvu, bg="#E6F2FA")
     Label(frame_Title, text="HỆ THỐNG DỊCH VỤ KHÁCH SẠN TOM AND JERRY", font=("Times New Roman",20, "bold"), fg="#2F4156", bg="#E6F2FA").pack()
@@ -185,8 +188,8 @@ def open_form_DichVu(vaitro):
     btn_Thoat.grid(row=0, column=4, padx=5)
     btn_Huy = Button(frame_Btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input)
     btn_Huy.grid(row=0, column=5, padx=5)
-    btn_Refresh = Button(frame_Btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
-    btn_Refresh.grid(row=0, column=6, padx=5)
+    btn_Reset = Button(frame_Btn, text="Reset", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Reset.grid(row=0, column=6, padx=5)
    
     # ===== Phân quyền =====
     if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
@@ -195,7 +198,7 @@ def open_form_DichVu(vaitro):
         btn_Sua.config(state=DISABLED, bg="gray")
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
-        btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_Reset.config(state=DISABLED, bg="gray")
 
     load_data()
     dichvu.mainloop()

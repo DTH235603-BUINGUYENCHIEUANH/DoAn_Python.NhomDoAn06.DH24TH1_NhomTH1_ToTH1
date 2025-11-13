@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from QLKS import conn, cur
+from ChatBot import open_chatbot, add_chatbot_button
 from Menu import create_menu
 
 def open_form_DatPhong(vaitro):
@@ -22,6 +23,9 @@ def open_form_DatPhong(vaitro):
 
     # ===== Hiển thị menu =====
     create_menu(frmDatPhong, "DatPhong", vaitro)
+
+    # ===== Chatbot =====
+    add_chatbot_button(frmDatPhong, x_offset=-10, y_offset=40)
 
     Label(frmDatPhong, text="QUẢN LÝ ĐẶT PHÒNG", font=("Times New Roman", 18, "bold"), bg="#E6F2FA").pack(pady=10)
 
@@ -384,8 +388,8 @@ def open_form_DatPhong(vaitro):
     btn_Huy.pack(side=LEFT, padx=5)
     btn_Thoat = Button(frame_btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=frmDatPhong.quit)
     btn_Thoat.pack(side=LEFT, padx=5)
-    btn_Refresh = Button(frame_btn, text="Refresh", width=8, bg="#00AEEF", fg="white", command=load_data)
-    btn_Refresh.pack(side=LEFT, padx=5)
+    btn_Reset = Button(frame_btn, text="Reset", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Reset.pack(side=LEFT, padx=5)
 
     # ===== Phân quyền =====
     if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)

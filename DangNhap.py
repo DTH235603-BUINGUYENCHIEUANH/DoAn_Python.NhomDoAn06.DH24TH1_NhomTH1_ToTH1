@@ -63,7 +63,7 @@ frmDangNhap.configure(bg="#E6F2FA")
 lab_DangNhap = Label(frmDangNhap, text="ĐĂNG NHẬP HỆ THỐNG",font=("Times New Roman", 20, "bold"), foreground="#2F4156", bg="#E6F2FA")
 lab_DangNhap.pack(pady=(30, 5))
 
-subtitle = Label(frmDangNhap,text="WELLCOME HỆ THỐNG QUẢN LÝ KHÁCH SẠN TOM&JERRY",font=("Times New Roman", 10), foreground="#2F4156", bg="#E6F2FA")
+subtitle = Label(frmDangNhap,text="HỆ THỐNG QUẢN LÝ KHÁCH SẠN TOM&JERRY",font=("Times New Roman", 10), foreground="#2F4156", bg="#E6F2FA")
 subtitle.pack(pady=(0, 20))
 
 # lab Tên đăng nhập + entry
