@@ -5,6 +5,13 @@ from QLKS import conn, cur, connect_db
 from TrangChu import open_trang_chu
 import mysql.connector
 
+# ====== Hàm canh giữa cửa sổ ======
+def center_window(win, w=400, h=400):
+    ws = win.winfo_screenwidth()
+    hs = win.winfo_screenheight()
+    x = (ws // 2) - (w // 2)
+    y = (hs // 2) - (h // 2)
+    win.geometry(f'{w}x{h}+{x}+{y}')   
 
 def DangNhap():  # xử lý btn Đăng Nhập
     ten = TenDangNhap_entry.get()
@@ -29,9 +36,10 @@ def DangNhap():  # xử lý btn Đăng Nhập
             user = cur.fetchone()
 
             if user:
-                messagebox.showinfo("Thành công", f"Đăng nhập thành công với tài khoản: {ten}")
+                vaitro = user[3]
+                messagebox.showinfo("Thành công", f"Đăng nhập thành công với tài khoản: {ten} ({vaitro})")
                 frmDangNhap.destroy()      # Đóng cửa sổ đăng nhập
-                open_trang_chu()           # Mở giao diện Trang Chủ
+                open_trang_chu(vaitro)           # Mở giao diện Trang Chủ
             else:
                 messagebox.showerror("Thất bại", "Tên đăng nhập hoặc mật khẩu không đúng.")
 
@@ -47,14 +55,15 @@ def DangNhap():  # xử lý btn Đăng Nhập
 # Tạo giao diện chính
 frmDangNhap = Tk()
 frmDangNhap.title("Đăng Nhập Hệ Thống Quản Lý Khách Sạn")
-frmDangNhap.geometry("400x400")
+frmDangNhap.minsize(width=400, height=400)
+center_window(frmDangNhap)
 frmDangNhap.configure(bg="#E6F2FA")
 
 # lab_ Đăng Nhập
 lab_DangNhap = Label(frmDangNhap, text="ĐĂNG NHẬP HỆ THỐNG",font=("Times New Roman", 20, "bold"), foreground="#2F4156", bg="#E6F2FA")
 lab_DangNhap.pack(pady=(30, 5))
 
-subtitle = Label(frmDangNhap,text="WELLCOME HỆ THỐNG QUẢN LÝ KHÁCH SẠN TOM&JERRY",font=("Times New Roman", 10), foreground="#2F4156", bg="#E6F2FA")
+subtitle = Label(frmDangNhap,text="HỆ THỐNG QUẢN LÝ KHÁCH SẠN TOM&JERRY",font=("Times New Roman", 10), foreground="#2F4156", bg="#E6F2FA")
 subtitle.pack(pady=(0, 20))
 
 # lab Tên đăng nhập + entry

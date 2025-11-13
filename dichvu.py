@@ -3,10 +3,13 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 from QLKS import conn, cur  
+from ChatBot import open_chatbot, add_chatbot_button
+from Menu import create_menu
 
-def open_form_dichvu():
+def open_form_DichVu(vaitro):
+            
     # ====== Hàm canh giữa cửa sổ ======
-    def center_window(win, w=700, h=500):
+    def center_window(win, w=800, h=600):
         ws = win.winfo_screenwidth()
         hs = win.winfo_screenheight()
         x = (ws // 2) - (w // 2)
@@ -16,37 +19,62 @@ def open_form_dichvu():
     # ===== Cửa sổ chính =====
     dichvu = Tk()
     dichvu.title("Dịch vụ - Quản lý khách sạn")
+    dichvu.minsize(width=800, height=600)
     center_window(dichvu)
     dichvu.configure(bg="#E6F2FA")
 
+    # ===== Hiển thị menu =====
+    create_menu(dichvu, "DichVu", vaitro)
+
+    # ===== Chatbot =====
+    add_chatbot_button(dichvu, x_offset=-10, y_offset=40)
     # ==== Title ====
     frame_Title = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Title, text="HỆ THỐNG DỊCH VỤ KHÁCH SẠN TOM AND JERRY", 
-          font=("Time news roman",20, "bold"), fg="#2F4156", bg="#E6F2FA").pack()
-    frame_Title.pack(pady=10, padx=10, fill="x")
+    Label(frame_Title, text="HỆ THỐNG DỊCH VỤ KHÁCH SẠN TOM AND JERRY", font=("Times New Roman",20, "bold"), fg="#2F4156", bg="#E6F2FA").pack()
+    frame_Title.pack(pady=10, padx=10)
+    
 
     # ==== Frame nhập thông tin ==== 
     frame_Info = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Info, text="Mã dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0)
+    frame_Info.pack(pady=5, padx=10)
+
+    Label(frame_Info, text="Mã dịch vụ: ", font=("Times New Roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2)
     entry_Madv = Entry(frame_Info, width=10)
-    entry_Madv.grid(row=0, column=1)
+    entry_Madv.grid(row=0, column=3)
 
-    Label(frame_Info, text="Tên dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=2)
-    entry_Tendv = Entry(frame_Info, width=20)
-    entry_Tendv.grid(row=0, column=3)
+    Label(frame_Info, text="Tên dịch vụ: ", font=("Times New Roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=0)
+    entry_Tendv = Entry(frame_Info, width=10)
+    entry_Tendv.grid(row=0, column=1)
 
-    Label(frame_Info, text="Giá dịch vụ: ", font=("Time news roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=4)
+    Label(frame_Info, text="Giá dịch vụ: ", font=("Times New Roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").grid(row=0, column=4)
     entry_GiaDV = Entry(frame_Info, width=10)
     entry_GiaDV.grid(row=0, column=5)
-    frame_Info.pack(pady=5, padx=10, fill="x")
+    
+    for i in range(6):  # 6 cột: 0-1, 2-3, 4-5
+        frame_Info.columnconfigure(i, weight=1, uniform="col")
 
     # ====== Bảng danh sách dịch vụ ======
-    frame_Table = Frame(dichvu, bg="#E6F2FA")
-    Label(frame_Table, text="Danh sách dịch vụ", font=("Time new roman",14,"bold"), fg="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
-    frame_Table.pack()
-    
+    Label(dichvu, text="Danh sách dịch vụ", font=("Times New Roman", 14, "bold"),
+          fg="#2F4156", bg="#E6F2FA").pack(pady=5, anchor="w", padx=10)
+
+    # ====== Frame chứa bảng và thanh cuộn ======
+    frame_Table = Frame(dichvu, bg="#E6F2FA", bd=2, relief="groove")
+    frame_Table.pack(padx=10, pady=5, anchor="center")
+
+    # ====== Cột ======
     columns = ("MãDV", "TênDV", "GiaDV")
-    tree = ttk.Treeview(frame_Table, columns=columns, show="headings", height=10)
+    tree = ttk.Treeview(frame_Table, columns=columns, show="headings", height=8)
+
+    # ====== Thanh cuộn ======
+    scroll_y = Scrollbar(frame_Table, orient="vertical", command=tree.yview)
+    scroll_x = Scrollbar(frame_Table, orient="horizontal", command=tree.xview)
+    tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+    # ====== Đặt vị trí ======
+    scroll_y.pack(side="right", fill="y")
+    scroll_x.pack(side="bottom", fill="x")
+    tree.pack(side="left")
+
     for col in columns:
         tree.heading(col, text=col)
     tree.column("MãDV", width=100, anchor="center")
@@ -54,7 +82,9 @@ def open_form_dichvu():
     tree.column("GiaDV", width=100)
     tree.pack(padx=10, pady=5, fill="both")
 
+
     # ===== Hàm xử lý =====
+
     def clear_input():
         entry_Madv.delete(0, END)
         entry_Tendv.delete(0, END)
@@ -107,6 +137,7 @@ def open_form_dichvu():
             conn.commit()
             load_data()
             clear_input()
+            #load_dichvu_to_combobox()
             messagebox.showinfo("Đã xóa", f"Dịch vụ {madv} đã được xóa.")
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi xóa: {e}")
@@ -143,12 +174,31 @@ def open_form_dichvu():
 
     # ===== Frame Button =====
     frame_Btn = Frame(dichvu, bg="#E6F2FA")
-    Button(frame_Btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_dichvu, cursor="hand2").grid(row=0, column=0, padx=5)
-    Button(frame_Btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_dichvu, cursor="hand2").grid(row=0, column=1, padx=5)
-    Button(frame_Btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_dichvu, cursor="hand2").grid(row=0, column=2, padx=5)
-    Button(frame_Btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_dichvu, cursor="hand2").grid(row=0, column=3, padx=5)
-    Button(frame_Btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=dichvu.destroy, cursor="hand2").grid(row=0, column=4, padx=5)
     frame_Btn.pack(pady=5)
+
+    btn_Them = Button(frame_Btn, text="Thêm", width=8, bg="#00AEEF", fg="white", command=them_dichvu, cursor="hand2")
+    btn_Them.grid(row=0, column=0, padx=5)
+    btn_Xoa = Button(frame_Btn, text="Xoá", width=8, bg="#00AEEF", fg="white", command=xoa_dichvu, cursor="hand2")
+    btn_Xoa.grid(row=0, column=1, padx=5)
+    btn_Sua = Button(frame_Btn, text="Sửa", width=8, bg="#00AEEF", fg="white", command=sua_dichvu, cursor="hand2")
+    btn_Sua.grid(row=0, column=2, padx=5)
+    btn_Luu = Button(frame_Btn, text="Lưu", width=8, bg="#00AEEF", fg="white", command=luu_dichvu, cursor="hand2")
+    btn_Luu.grid(row=0, column=3, padx=5)
+    btn_Thoat = Button(frame_Btn, text="Thoát", width=8, bg="#00AEEF", fg="white", command=dichvu.destroy, cursor="hand2")
+    btn_Thoat.grid(row=0, column=4, padx=5)
+    btn_Huy = Button(frame_Btn, text="Hủy", width=8, bg="#00AEEF", fg="white", command=clear_input)
+    btn_Huy.grid(row=0, column=5, padx=5)
+    btn_Reset = Button(frame_Btn, text="Reset", width=8, bg="#00AEEF", fg="white", command=load_data)
+    btn_Reset.grid(row=0, column=6, padx=5)
+   
+    # ===== Phân quyền =====
+    if vaitro.lower() == 'user':  # Nếu là User, vô hiệu hoá nút thao tác (Trừ nút thoát)
+        btn_Them.config(state=DISABLED, bg="gray")
+        btn_Xoa.config(state=DISABLED, bg="gray")
+        btn_Sua.config(state=DISABLED, bg="gray")
+        btn_Luu.config(state=DISABLED, bg="gray")
+        btn_Huy.config(state=DISABLED, bg="gray")
+        btn_Reset.config(state=DISABLED, bg="gray")
 
     load_data()
     dichvu.mainloop()
