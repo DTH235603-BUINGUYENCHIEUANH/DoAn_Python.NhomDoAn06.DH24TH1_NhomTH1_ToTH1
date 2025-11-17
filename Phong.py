@@ -169,7 +169,7 @@ def open_form_Phong(vaitro):
                 return
             try:
                 giaphong = int(giaphong)
-                cur.execute("UPDATE PHONG SET TenPhong=%s, LoaiPhong=%s, GiaPhong=%s, TrangThai=%s WHERE MaDV=%s", (maphong, tenphong, loaiphong, giaphong, trangthai))
+                cur.execute("UPDATE PHONG SET TenPhong=%s, LoaiPhong=%s, Gia=%s, TrangThai=%s WHERE MaPhong=%s", (tenphong, loaiphong, giaphong, trangthai, maphong))
                 conn.commit()
                 load_data()
                 clear_input()
