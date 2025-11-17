@@ -398,7 +398,7 @@ def open_form_DatPhong(vaitro):
         btn_Sua.config(state=DISABLED, bg="gray")
         btn_Luu.config(state=DISABLED, bg="gray")
         btn_Huy.config(state=DISABLED, bg="gray")
-        btn_Refresh.config(state=DISABLED, bg="gray")
+        btn_Reset.config(state=DISABLED, bg="gray")
 
     frmDatPhong.update_idletasks()
     load_data()
